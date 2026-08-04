@@ -1,12 +1,12 @@
 ---
 title: "PARM-X: projecting live geospatial data onto physical city models"
-summary: "The interactive software layer for Nottingham's projection augmented relief model. A multi-screen web platform that drapes live council data, crowd simulations and public responses onto the physical terrain, with four synchronised screen routes and five data pipelines."
+summary: "The interactive software layer for Nottingham's projection augmented relief model. Live council data, crowd simulations and public responses draped onto physical terrain across four synchronised screens, cutting a four-hour preparation process to minutes for executive planning sessions."
 period: 2025 to 2026
 status: Active
 role: Lead developer
 tags: [React, TypeScript, Leaflet, Esri, H3, Three.js, Supabase, PostGIS]
 featured: true
-order: 4
+order: 5
 updated: 2026-08-04
 
 logo: ../../assets/work/parm-x/logo.png
@@ -21,15 +21,15 @@ links:
     href: "https://www.greenmeadowsknowledgebank.uk/city-as-lab"
 
 metrics:
-  - value: "4"
-    label: Screen routes
-    note: "Controls, Map Display, Presentation and a mobile participant view, kept in sync with no server-side relay."
+  - value: 4h → min
+    label: Map preparation
+    note: "A four-hour manual process reduced to minutes, producing cartographic outputs and live 3D displays for executive planning sessions."
   - value: "5"
     label: Data pipelines
     note: "ArcGIS REST, file upload, OSM Overpass, WMS and authenticated ArcGIS Online, all loading into one unified layer list."
-  - value: "3"
-    label: Map games
-    note: "Built for the quiet periods in a public session, on a channel kept separate from the mapping pipeline."
+  - value: "4"
+    label: Screen routes
+    note: "Controls, Map Display, Presentation and a mobile participant view, kept in sync with no server-side relay."
   - value: MIT
     label: Open source
     note: "Built entirely on open components and open standards, and reconfigurable to any city by changing the bounds constants."
@@ -76,6 +76,8 @@ figures:
 outcomes:
   - title: Live control of what the model shows
     body: "Datasets change while a session is running rather than being prepared in advance. An operator toggles a layer on the console and it lands on the physical terrain within milliseconds, which is what lets a session follow the question a room is actually asking."
+  - title: A four-hour job became a four-minute one
+    body: "Producing cartographic outputs and live 3D decision-support displays for executive planning sessions previously meant hours of manual preparation per session. Driving the projection from live services collapsed that to minutes, which is the difference between preparing for a meeting and responding during one."
   - title: Off-axis projection handled properly
     body: "Calibration solves a full perspective homography from four clicked corners rather than a simple scale and offset, so the projector does not have to hang directly above the model. That is what lets a setup go into a room that was not designed for it."
   - title: Three windows, no server
@@ -160,6 +162,11 @@ City as Lab programme around it were already running. What was missing was a
 way to drive the projection live from a browser, so a model can show anything
 the city publishes, from any projector angle, while the people standing around
 it add to what is on it.
+
+The audience turned out to matter as much as the mechanism. The same platform
+runs a public session in a library and an executive planning session, and in
+the second case the four hours that used to go into preparing cartographic
+outputs for a meeting now go into the meeting itself.
 
 ## The insight
 

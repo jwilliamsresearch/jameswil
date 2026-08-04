@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+
 export interface Props {
   title: string;
   href?: string;
@@ -7,14 +9,52 @@ export interface Props {
   label?: string;
   meta?: string;
   tags?: string[];
+  /** Cover thumbnail, shown under the index in the left gutter. */
+  thumb?: ImageMetadata;
+  thumbAlt?: string;
+  /**
+   * Headline figure for the right column. Gives a long list a scanning anchor,
+   * so a reader can find the interesting row without reading every summary.
+   */
+  metric?: { value: string; label: string };
+  /** Tags beyond this are folded into a +n chip. */
+  maxTags?: number;
 }
 
-const { title, href, description, label, meta, tags = [] } = Astro.props;
+const {
+  title,
+  href,
+  description,
+  label,
+  meta,
+  tags = [],
+  thumb,
+  thumbAlt,
+  metric,
+  maxTags = 4,
+} = Astro.props;
+
+const shown = tags.slice(0, maxTags);
+const hidden = tags.length - shown.length;
 ---
 
 <li class="row">
   <div class="row-inner">
-    {label && <div class="row-num">{label}</div>}
+    {(label || thumb) && (
+      <div class="row-num">
+        {label}
+        {thumb && (
+          <Image
+            class="row-thumb"
+            src={thumb}
+            alt={thumbAlt ?? ''}
+            widths={[176, 264, 352]}
+            sizes="88px"
+            loading="lazy"
+          />
+        )}
+      </div>
+    )}
     <h3 class="row-title">
       {href ? <a class="row-link" href={href}>{title}</a> : title}
     </h3>
@@ -22,10 +62,19 @@ const { title, href, description, label, meta, tags = [] } = Astro.props;
       {description && <p class="row-desc">{description}</p>}
       {tags.length > 0 && (
         <div class="tags">
-          {tags.map((tag) => <span class="tag">{tag}</span>)}
+          {shown.map((tag) => <span class="tag">{tag}</span>)}
+          {hidden > 0 && <span class="tag is-more">+{hidden}</span>}
         </div>
       )}
     </div>
-    {meta && <div class="row-end">{meta}</div>}
+    <div class="row-end">
+      {metric && (
+        <span class="row-metric">
+          <span class="row-metric-value">{metric.value}</span>
+          <span class="row-metric-label">{metric.label}</span>
+        </span>
+      )}
+      {meta && <span class="row-meta">{meta}</span>}
+    </div>
   </div>
 </li>

@@ -50,10 +50,12 @@ I design reproducible ETL for large heterogeneous datasets, covering
 ingestion, conflation, entity resolution, validation, and publication to
 GeoParquet, PMTiles and vector tiles.
 
-Recent deliveries include a 23.5M-record platform unifying 53 source datasets,
-23M+ conflated points of interest across 6 countries, a geocoder resolving
-894M+ place references across 9 gazetteer sources, and a routing engine fusing
-49 datasets at millisecond response.
+Recent deliveries include [CDISAW](/work/cdisaw), a 23.5M-record platform
+unifying 53 source datasets; [AnythingPOI](/work/anythingpoi), 22.7M conflated
+points of interest across six countries; [Topodex](/work/topodex), a geocoder
+resolving 894M+ place references across nine gazetteers; and
+[WalkGrid](/work/walkgrid), a routing engine fusing 49 datasets at millisecond
+response.
 
 I hold a PhD in Geospatial Computer Science, an MSc in Computer Science and a
 BSc in Information and Communications Technology.

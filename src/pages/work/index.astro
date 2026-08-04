@@ -54,14 +54,15 @@ const description =
       </p>
 
       <ul class="rows">
-        {projects.map((project, i) => (
+        {projects.map((project) => (
           <Row
-            label={String(i + 1).padStart(2, '0')}
             title={project.data.title}
             href={`/work/${project.id}`}
             description={project.data.summary}
             meta={project.data.period}
             tags={project.data.tags}
+            metric={project.data.metrics[0]}
+            thumb={project.data.cover}
           />
         ))}
       </ul>

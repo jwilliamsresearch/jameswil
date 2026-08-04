@@ -5,12 +5,21 @@ import { SITE } from '../consts';
 import { publications } from '../lib/publications';
 
 export async function GET(context: APIContext) {
-  const [projects, teaching] = await Promise.all([
+  const [projects, teaching, notes] = await Promise.all([
     getCollection('work', ({ data }) => !data.draft),
     getCollection('teaching', ({ data }) => !data.draft),
+    getCollection('notes', ({ data }) => !data.draft),
   ]);
 
   const items = [
+    ...notes.map((note) => ({
+      title: note.data.title,
+      /* Notes are short, so the feed carries the whole thing. */
+      description: note.body ?? note.data.title,
+      link: `/notes/${note.id}`,
+      pubDate: note.data.date,
+      categories: ['Note', ...note.data.tags],
+    })),
     ...publications.map((pub) => ({
       title: pub.title,
       description: pub.abstract ?? pub.citation,

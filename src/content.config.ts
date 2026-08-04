@@ -209,4 +209,23 @@ const pages = defineCollection({
     }),
 });
 
-export const collections = { work, teaching, pages };
+/**
+ * Short notes. The format is the constraint: a hard brevity cap makes padding
+ * structurally impossible, which is a better guarantee than discipline. There
+ * is deliberately no summary or excerpt field, because a note short enough to
+ * need neither is the point.
+ */
+const notes = defineCollection({
+  loader: glob({ base: './src/content/notes', pattern: '**/*.{md,mdx}' }),
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    /** Two or three at most. These are notes, not a taxonomy. */
+    tags: z.array(z.string()).default([]),
+    /** Optional pointer to the project the note came out of. */
+    project: z.string().optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { work, teaching, pages, notes };

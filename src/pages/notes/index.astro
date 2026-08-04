@@ -1,0 +1,101 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHead from '../../components/PageHead.astro';
+import { blogSchema, breadcrumbSchema } from '../../lib/schema';
+
+/** Notes are short enough to read in full here, so the index is the content. */
+const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+
+const rendered = await Promise.all(
+  notes.map(async (note) => ({ note, Content: (await render(note)).Content })),
+);
+
+/* The brevity cap is enforced at build rather than trusted to discipline. */
+const CAP = 300;
+for (const note of notes) {
+  const words = note.body?.trim().split(/\s+/).filter(Boolean).length ?? 0;
+  if (words > CAP) {
+    console.warn(
+      `[notes] ${note.id} runs to ${words} words, over the ${CAP}-word cap. ` +
+        `Cut it, or make it a project page.`,
+    );
+  }
+}
+
+const fmt = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+});
+
+const description =
+  'Short notes on geospatial data engineering by James Williams: the thresholds, failures and refusals behind the projects, written at the length they deserve.';
+---
+
+<BaseLayout
+  title="Notes: Geospatial Data Engineering"
+  description={description}
+  jsonLd={[
+    blogSchema({
+      name: 'Notes',
+      description,
+      path: '/notes',
+      posts: notes.map((n) => ({
+        name: n.data.title,
+        path: `/notes/${n.id}`,
+        datePublished: n.data.date,
+      })),
+    }),
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Notes', path: '/notes' },
+    ]),
+  ]}
+>
+  <PageHead
+    label="Notes"
+    title="Notes"
+    lead="Short pieces on the decisions behind the work: the thresholds I had to pick, the things that failed, and the numbers that mean less than they look."
+  />
+
+  <section class="section">
+    <div class="wrap">
+      <div class="note-stream">
+        {rendered.map(({ note, Content }) => (
+          <article class="note-entry" id={note.id}>
+            <header class="note-head">
+              <time class="label" datetime={note.data.date.toISOString()}>
+                {fmt.format(note.data.date)}
+              </time>
+              <h2 class="note-title">
+                <a href={`/notes/${note.id}`}>{note.data.title}</a>
+              </h2>
+            </header>
+
+            <div class="prose note-body">
+              <Content />
+            </div>
+
+            {(note.data.tags.length > 0 || note.data.project) && (
+              <div class="tags note-tags">
+                {note.data.project && (
+                  <a class="tag is-link" href={`/work/${note.data.project}`}>
+                    {note.data.project}
+                  </a>
+                )}
+                {note.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+
+      {notes.length === 0 && (
+        <p class="note">Nothing here yet.</p>
+      )}
+    </div>
+  </section>
+</BaseLayout>

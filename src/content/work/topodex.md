@@ -1,6 +1,6 @@
 ---
 title: "Topodex: contextual geocoding for conflict and human rights corpora"
-summary: "A Python library that makes geocoders accountable to the document they are reading. Nine open sources reranked against document context, a six-category failure taxonomy, and a coherence check across every place a document names."
+summary: "A Python library that makes geocoders accountable to the document they are reading. 894M+ places resolved across nine open sources, reranked against document context, with a six-category failure taxonomy and a coherence check over everywhere a document names."
 period: 2026 to present
 status: Active
 role: Author and lead developer
@@ -20,6 +20,9 @@ links:
     href: "https://github.com/jwilliamsresearch"
 
 metrics:
+  - value: 894M+
+    label: Places resolved
+    note: "Toponyms reconciled across nine gazetteers that spell, transliterate and administer the same place differently."
   - value: "9"
     label: Open geocoders
     note: "Nominatim, GeoNames, Wikidata, Overpass, OpenHistoricalMap, NGA GEOnet, Overture, Pleiades and Who's on First. No proprietary API required."
@@ -29,9 +32,6 @@ metrics:
   - value: "6"
     label: Failure modes
     note: "Formally classified, detected per toponym, and surfaced with evidence and a suggested correction rather than resolved silently."
-  - value: MIT
-    label: Open source
-    note: "Built on open gazetteers throughout, so a result can be reproduced by anyone without a commercial licence."
 
 steps:
   - title: Read the document before the gazetteer

@@ -168,6 +168,71 @@ export function publicationSchema(pub: Publication) {
   return schema;
 }
 
+/**
+ * Notes are blog posts, so they say so. CreativeWork is the most generic type
+ * in the vocabulary and tells a crawler almost nothing; BlogPosting is what
+ * makes a page eligible to be understood as an article, with an author, a
+ * publication date and a headline.
+ */
+export function blogPostingSchema(opts: {
+  title: string;
+  description: string;
+  path: string;
+  datePublished: Date;
+  dateModified?: Date;
+  keywords?: string[];
+  wordCount?: number;
+}) {
+  const url = absolute(opts.path);
+  const schema: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    '@id': `${url}#post`,
+    headline: opts.title,
+    name: opts.title,
+    description: opts.description,
+    url,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    inLanguage: 'en',
+    author: { '@id': personId },
+    publisher: { '@id': personId },
+    isPartOf: { '@id': siteId },
+    datePublished: opts.datePublished.toISOString(),
+    dateModified: (opts.dateModified ?? opts.datePublished).toISOString(),
+  };
+  if (opts.keywords?.length) schema.keywords = opts.keywords;
+  if (opts.wordCount) schema.wordCount = opts.wordCount;
+  return schema;
+}
+
+/** The notes index, declared as a Blog rather than a generic listing page. */
+export function blogSchema(opts: {
+  name: string;
+  description: string;
+  path: string;
+  posts: Array<{ name: string; path: string; datePublished: Date }>;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    '@id': `${absolute(opts.path)}#blog`,
+    name: opts.name,
+    description: opts.description,
+    url: absolute(opts.path),
+    inLanguage: 'en',
+    author: { '@id': personId },
+    publisher: { '@id': personId },
+    isPartOf: { '@id': siteId },
+    blogPost: opts.posts.map((post) => ({
+      '@type': 'BlogPosting',
+      headline: post.name,
+      url: absolute(post.path),
+      datePublished: post.datePublished.toISOString(),
+      author: { '@id': personId },
+    })),
+  };
+}
+
 export function creativeWorkSchema(opts: {
   type: 'CreativeWork' | 'Course';
   name: string;

@@ -1,0 +1,109 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHead from '../../components/PageHead.astro';
+import { breadcrumbSchema, blogPostingSchema } from '../../lib/schema';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+  );
+
+  return notes.map((note, i) => ({
+    params: { slug: note.id },
+    props: { note, newer: notes[i - 1] ?? null, older: notes[i + 1] ?? null },
+  }));
+};
+
+const { note, newer, older } = Astro.props;
+const { Content } = await render(note);
+const d = note.data;
+const path = `/notes/${note.id}`;
+
+const fmt = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+
+/* A note has no summary field, so the meta description is its opening. */
+const opening = (note.body ?? '')
+  .replace(/[#*_>`\[\]]/g, '')
+  .trim()
+  .slice(0, 158);
+
+const wordCount = (note.body ?? '').trim().split(/\s+/).filter(Boolean).length;
+
+/* Google truncates a headline past roughly 110 characters. */
+if (d.title.length > 110) {
+  console.warn(`[notes] "${note.id}" headline is ${d.title.length} chars, over 110.`);
+}
+---
+
+<BaseLayout
+  title={d.title}
+  description={opening}
+  type="article"
+  keywords={d.tags}
+  publishedTime={d.date.toISOString()}
+  jsonLd={[
+    blogPostingSchema({
+      title: d.title,
+      description: opening,
+      path,
+      datePublished: d.date,
+      keywords: d.tags,
+      wordCount,
+    }),
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Notes', path: '/notes' },
+      { name: d.title, path },
+    ]),
+  ]}
+>
+  <PageHead label="Note" title={d.title} document meta={fmt.format(d.date)} />
+
+  <section class="section">
+    <div class="wrap">
+      <div class="prose note-single">
+        <Content />
+      </div>
+
+      {(d.tags.length > 0 || d.project) && (
+        <div class="tags note-tags">
+          {d.project && (
+            <a class="tag is-link" href={`/work/${d.project}`}>{d.project}</a>
+          )}
+          {d.tags.map((tag) => <span class="tag">{tag}</span>)}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <nav class="proj-nav" aria-label="More notes">
+    {older ? (
+      <a class="proj-nav-item" href={`/notes/${older.id}`} rel="prev">
+        <span class="label">← Older</span>
+        <span class="proj-nav-title">{older.data.title}</span>
+      </a>
+    ) : (
+      <a class="proj-nav-item" href="/notes">
+        <span class="label">← All</span>
+        <span class="proj-nav-title">All notes</span>
+      </a>
+    )}
+    {newer ? (
+      <a class="proj-nav-item is-end" href={`/notes/${newer.id}`} rel="next">
+        <span class="label">Newer →</span>
+        <span class="proj-nav-title">{newer.data.title}</span>
+      </a>
+    ) : (
+      <a class="proj-nav-item is-end" href="/notes">
+        <span class="label">All →</span>
+        <span class="proj-nav-title">All notes</span>
+      </a>
+    )}
+  </nav>
+</BaseLayout>

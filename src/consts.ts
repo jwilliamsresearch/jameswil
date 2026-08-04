@@ -33,11 +33,15 @@ export const SITE = {
   ],
 } as const;
 
+/**
+ * Six items, held deliberately. Home is not among them because the wordmark
+ * already goes there, which is the convention and buys the slot back.
+ */
 export const NAV = [
-  { label: 'Home', href: '/' },
   { label: 'About', href: '/about' },
   { label: 'Work', href: '/work' },
   { label: 'Publications', href: '/publications' },
+  { label: 'Notes', href: '/notes' },
   { label: 'Teaching', href: '/teaching' },
   { label: 'Contact', href: '/contact' },
 ] as const;

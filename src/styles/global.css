@@ -626,7 +626,7 @@ main { flex: 1 0 auto; }
 }
 .row-inner {
   display: grid;
-  grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, 21rem) 5rem;
+  grid-template-columns: 5.5rem minmax(0, 1fr) minmax(0, 21rem) 7.5rem;
   gap: 0.4rem clamp(1rem, 2.5vw, 2rem);
   align-items: baseline;
   padding-block: clamp(1.15rem, 2vw, 1.7rem);
@@ -637,7 +637,19 @@ main { flex: 1 0 auto; }
 /* Placed explicitly. The label cell is optional, and without this a row that
    omits it pulls every remaining cell one column left, squeezing the title
    into the 3.5rem gutter meant for the index. */
-.row-num   { grid-column: 1; }
+.row-num   { grid-column: 1; align-self: start; }
+
+/* Cover thumbnail under the index. Held in greyscale so the ledger stays
+   monochrome at rest, then released to full colour as the row inverts, which
+   matches how the funder marks behave rather than adding a new idiom. */
+.row-thumb {
+  width: 5.5rem;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  filter: grayscale(1) contrast(1.05);
+  transition: filter var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
 .row-title { grid-column: 2; }
 .row-body  { grid-column: 3; }
 .row-end   { grid-column: 4; }
@@ -658,12 +670,45 @@ main { flex: 1 0 auto; }
   line-height: 1.15;
 }
 .row-body { min-width: 0; }
+/* Clamped to three lines. A summary written to sell a project page is too long
+   to repeat seven times in a list; the detail lives one click away. */
 .row-desc {
   font-size: 0.875rem;
   color: var(--fg-muted);
   line-height: 1.55;
   transition: color var(--dur) var(--ease);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
+
+/* Right column: the headline figure, then the period under it. This is the
+   column a reader scans down when deciding which row to open. */
+.row-end { display: flex; flex-direction: column; gap: 0.45rem; align-items: flex-end; }
+.row-metric { display: flex; flex-direction: column; gap: 0.1rem; align-items: flex-end; }
+.row-metric-value {
+  font-size: 1.375rem;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+  text-transform: none;
+  transition: color var(--dur) var(--ease);
+}
+.row-metric-label {
+  font-size: 0.5625rem;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  color: var(--fg-faint);
+  max-width: 7rem;
+}
+.row-meta { display: block; }
+
+/* The overflow chip is a count, not a category, so it reads quieter. */
+.tag.is-more { border-style: dashed; }
 
 .row-link::after { content: ""; position: absolute; inset: 0; }
 
@@ -673,7 +718,14 @@ main { flex: 1 0 auto; }
   .row:hover .row-inner,
   .row:hover .row-desc { color: var(--bg); }
   .row:hover .row-num,
-  .row:hover .row-end { color: color-mix(in srgb, var(--bg) 60%, var(--fg)); }
+  .row:hover .row-end,
+  .row:hover .row-metric-label { color: color-mix(in srgb, var(--bg) 60%, var(--fg)); }
+  /* Set explicitly above, so it needs inverting explicitly too. */
+  .row:hover .row-metric-value { color: var(--bg); }
+  .row:hover .row-thumb {
+    filter: none;
+    border-color: color-mix(in srgb, var(--bg) 45%, var(--fg));
+  }
   .row:hover .tag { border-color: color-mix(in srgb, var(--bg) 45%, var(--fg)); color: var(--bg); }
   .row:hover .row-title { transform: translateX(6px); }
 }
@@ -1765,6 +1817,78 @@ pre.cite-body {
   .proj-nav { grid-template-columns: minmax(0, 1fr); }
   .proj-nav-item { min-height: 0; padding-block: 1.5rem; }
   .proj-nav-item.is-end { align-items: flex-start; text-align: left; }
+}
+
+/* ---- 18c. Notes ---------------------------------------------------------
+   Short pieces, so the index carries them in full. Reading a 150-word note
+   should not cost a page load; the permalink exists for sharing and search.
+   ------------------------------------------------------------------------ */
+
+.note-stream { border-top: 1px solid var(--fg); }
+
+.note-entry {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 0 clamp(1.5rem, 4vw, 3rem);
+  padding-block: clamp(2rem, 4vw, 3rem);
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: calc(var(--header-h, 58px) + 1.5rem);
+}
+/* The date runs down a sticky left rail, so a long stream stays oriented. */
+.note-head { grid-column: 1; }
+.note-head time { display: block; position: sticky; top: calc(var(--header-h, 58px) + 1.5rem); }
+.note-title {
+  grid-column: 2;
+  grid-row: 1;
+  font-size: clamp(1.15rem, 1rem + 0.6vw, 1.5rem);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin-bottom: 0.9rem;
+}
+.note-title a { border-bottom: 1px solid transparent; transition: border-color var(--dur) var(--ease); }
+.note-title a:hover { border-bottom-color: var(--fg); }
+
+.note-body { grid-column: 2; max-width: 40rem; }
+.note-body > *:first-child { margin-top: 0; }
+.note-tags { grid-column: 2; margin-top: 1.1rem; }
+.tag.is-link { color: var(--fg-muted); transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+.tag.is-link:hover { color: var(--fg); border-color: var(--fg); }
+
+/* Single-note page: the measure is the whole layout. */
+.note-single { max-width: 40rem; }
+
+/* A note carrying a results table needs the full width, and the table needs
+   to read as a journal table: greyscale, tabular figures, numbers right
+   aligned against the column they belong to, no zebra striping. */
+.note-body:has(table),
+.note-single:has(table) { max-width: 52rem; }
+
+.note-body table,
+.note-single table {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8125rem;
+  border-top: 1px solid var(--fg);
+}
+.note-body td:not(:first-child),
+.note-body th:not(:first-child),
+.note-single td:not(:first-child),
+.note-single th:not(:first-child) {
+  text-align: right;
+  padding-left: 1.15rem;
+}
+/* The leading column carries the label, so it stays in full contrast while
+   the figures sit back. */
+.note-body tbody td:first-child,
+.note-single tbody td:first-child { color: var(--fg); white-space: nowrap; }
+.note-body tbody td,
+.note-single tbody td { padding-block: 0.5rem; }
+
+@media (max-width: 48rem) {
+  .note-entry { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+  .note-head { grid-column: 1; }
+  .note-title, .note-body, .note-tags { grid-column: 1; }
+  .note-title { grid-row: auto; }
+  .note-head time { position: static; }
 }
 
 /* ---- 19. Small-screen polish -------------------------------------------- */
