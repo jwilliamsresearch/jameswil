@@ -10,11 +10,11 @@ const projects = (await getCollection('work', ({ data }) => !data.draft)).sort(
 );
 
 const description =
-  'Geospatial AI, humanitarian data infrastructure, urban planning intelligence, and the computational geography of human experience.';
+  'Geospatial projects by James Williams: production ETL and conflation at national scale, spatial platforms, environmental preference routing across 51 features, and an LLM-native place format.';
 ---
 
 <BaseLayout
-  title="Work"
+  title="Work: Geospatial Projects at Scale"
   description={description}
   jsonLd={[
     collectionPageSchema({
@@ -32,7 +32,7 @@ const description =
   <PageHead
     label="Work"
     title="Work"
-    lead="Geospatial AI, humanitarian data infrastructure, urban planning intelligence, and the computational geography of human experience."
+    lead="Geospatial systems from national data infrastructure to open specifications: production pipelines, spatial platforms, standards work, and the computational geography of human experience."
   />
 
   <section class="section">
@@ -54,8 +54,9 @@ const description =
       </p>
 
       <ul class="rows">
-        {projects.map((project) => (
+        {projects.map((project, i) => (
           <Row
+            label={String(i + 1).padStart(2, '0')}
             title={project.data.title}
             href={`/work/${project.id}`}
             description={project.data.summary}

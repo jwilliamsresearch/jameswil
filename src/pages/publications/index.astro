@@ -2,18 +2,29 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHead from '../../components/PageHead.astro';
 import PublicationRow from '../../components/PublicationRow.astro';
+import Metrics from '../../components/Metrics.astro';
 import { publications, publicationsByYear } from '../../lib/publications';
 import { collectionPageSchema, breadcrumbSchema } from '../../lib/schema';
 
 const groups = publicationsByYear();
 const kinds = [...new Set(publications.map((p) => p.kind))].sort();
 
+/* Counted rather than hardcoded, so the intro can never drift from the .bib. */
+const total = publications.length;
+const peerReviewed = publications.filter(
+  (p) => p.kind === 'Journal article' || p.kind === 'Conference paper',
+).length;
+const datasets = publications.filter((p) => p.kind === 'Dataset').length;
+const years = groups.map((g) => g.year);
+const span = years.length > 0 ? `${Math.min(...years)} to ${Math.max(...years)}` : '';
+const venues = new Set(publications.map((p) => p.venue).filter(Boolean)).size;
+
 const description =
-  'Peer reviewed papers, conference proceedings, preprints, datasets and theses by James Williams, with abstracts, PDFs and citation data for each.';
+  `${total} publications by James Williams, ${peerReviewed} peer reviewed, spanning platial analysis, leisure walking systems, points of interest datasets and spatial formats for language models.`;
 ---
 
 <BaseLayout
-  title="Publications"
+  title={`Publications: ${peerReviewed} Peer-Reviewed Papers and ${datasets} Datasets`}
   description={description}
   jsonLd={[
     collectionPageSchema({
@@ -31,7 +42,33 @@ const description =
   <PageHead
     label="Publications"
     title="Publications"
-    lead="My work sits between GIScience, computer science and the social sciences, and the publication record follows it: conflict data infrastructure, urban representation learning, platial analysis and the systems underneath all three."
+    lead={`${total} publications since ${Math.min(...years)}, sitting between GIScience, computer science and the social sciences: platial analysis and leisure walking systems, points of interest datasets at national scale, walkability surfaces, spatial formats for language models, and applied collaboration in health geography.`}
+  />
+
+  <Metrics
+    label="Record"
+    items={[
+      {
+        value: String(total),
+        label: 'Publications',
+        note: `Papers, datasets, preprints and theses, ${span}, each with abstract, PDF and citation data.`,
+      },
+      {
+        value: String(peerReviewed),
+        label: 'Peer reviewed',
+        note: 'Conference proceedings and journal articles across GIScience, HCI and urban analytics.',
+      },
+      {
+        value: String(datasets),
+        label: 'Published datasets',
+        note: 'Conflated points of interest covering six countries, versioned and openly released.',
+      },
+      {
+        value: String(venues),
+        label: 'Distinct venues',
+        note: 'Including LBS, GISRUK, SDSS, PLATIAL, OSMScience and IEEE conference proceedings.',
+      },
+    ]}
   />
 
   <section class="section">

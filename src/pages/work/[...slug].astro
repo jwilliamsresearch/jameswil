@@ -1,23 +1,70 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import { getCollection, render } from 'astro:content';
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHead from '../../components/PageHead.astro';
+import Metrics from '../../components/Metrics.astro';
+import { SITE } from '../../consts';
 import { breadcrumbSchema, creativeWorkSchema } from '../../lib/schema';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const projects = await getCollection('work', ({ data }) => !data.draft);
-  return projects.map((project) => ({
+  const projects = (await getCollection('work', ({ data }) => !data.draft)).sort(
+    (a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title),
+  );
+
+  // Prev/next are resolved here so the detail page never re-reads the
+  // collection just to find its neighbours.
+  return projects.map((project, i) => ({
     params: { slug: project.id },
-    props: { project },
+    props: {
+      project,
+      prev: projects[i - 1] ?? null,
+      next: projects[i + 1] ?? null,
+    },
   }));
 };
 
-const { project } = Astro.props;
+const { project, prev, next } = Astro.props;
 const { Content, headings } = await render(project);
 const d = project.data;
 const path = `/work/${project.id}`;
+
+/** Anchors for the rail: markdown H2s first, then the structured bands. */
+const sections = [
+  ...headings.filter((h) => h.depth === 2).map((h) => ({ slug: h.slug, text: h.text })),
+  d.steps.length > 0 && { slug: 'how-it-works', text: 'How it works' },
+  d.figures.length > 0 && { slug: 'figures', text: 'Figures' },
+  d.outcomes.length > 0 && { slug: 'outcomes', text: 'Outcomes' },
+  d.stack.length > 0 && { slug: 'stack', text: 'Stack' },
+  d.sponsors.length > 0 && { slug: 'partners', text: 'Partners' },
+  d.related.length > 0 && { slug: 'related', text: 'Related' },
+].filter(Boolean) as { slug: string; text: string }[];
+
+const primaryLink = d.links[0];
+const otherLinks = d.links.slice(1);
+
+/**
+ * A video poster is a plain attribute, so it never passes through <Image> and
+ * would otherwise ship as the original PNG. Posters here run to a megabyte
+ * each, which is the whole page budget spent on frames the clip replaces a
+ * second later. Optimise them explicitly.
+ */
+const posters = new Map<string, string>();
+for (const fig of d.figures) {
+  if (!fig.video) continue;
+  const img = await getImage({ src: fig.src, width: 1100, format: 'webp', quality: 70 });
+  posters.set(fig.video.mp4, img.src);
+}
+
+/**
+ * Figures sit in a two-column grid. An odd count would leave the last cell
+ * empty, so the first figure is promoted to full width instead: it absorbs the
+ * odd one out and doubles as the opening shot. `wide` in frontmatter still
+ * forces a specific figure wide.
+ */
+const oddCount = d.figures.length % 2 === 1;
+const isWide = (fig: (typeof d.figures)[number], i: number) => fig.wide || (oddCount && i === 0);
 ---
 
 <BaseLayout
@@ -42,40 +89,67 @@ const path = `/work/${project.id}`;
     ]),
   ]}
 >
-  <PageHead label="Project" title={d.title} lead={d.summary}>
-    <dl class="facts" style="margin-top:2.5rem">
-      <dt>Period</dt>
-      <dd>{d.period}</dd>
-      <dt>Status</dt>
-      <dd>{d.status}</dd>
-      {d.role && (<><dt>Role</dt><dd>{d.role}</dd></>)}
+  <PageHead label="Project" title={d.title} lead={d.summary} document>
+    {d.logo && (
+      <Image slot="pre" class="proj-logo" src={d.logo} alt={`${d.title} logo`} widths={[240, 480]} sizes="240px" loading="eager" />
+    )}
+
+    <div class="proj-meta">
+      <div>
+        <span class="label">Period</span>
+        <p>{d.period}</p>
+      </div>
+      <div>
+        <span class="label">Status</span>
+        <p><span class:list={['status', `is-${d.status.toLowerCase()}`]}>{d.status}</span></p>
+      </div>
+      {d.role && (
+        <div>
+          <span class="label">Role</span>
+          <p>{d.role}</p>
+        </div>
+      )}
       {d.tags.length > 0 && (
-        <>
-          <dt>Areas</dt>
-          <dd>{d.tags.join(', ')}</dd>
-        </>
+        <div class="proj-meta-wide">
+          <span class="label">Areas</span>
+          <p>{d.tags.join(' · ')}</p>
+        </div>
       )}
-      {d.links.length > 0 && (
-        <>
-          <dt>Links</dt>
-          <dd>
-            {d.links.map((link, i) => (
-              <>
-                {i > 0 && ' · '}
-                <a href={link.href} rel="noopener">{link.label}</a>
-              </>
-            ))}
-          </dd>
-        </>
-      )}
-    </dl>
+    </div>
+
+    {d.links.length > 0 && (
+      <div class="inline-links" style="margin-top:2rem">
+        {primaryLink && (
+          <a class="chip is-solid" href={primaryLink.href} rel="noopener">{primaryLink.label}</a>
+        )}
+        {otherLinks.map((link) => (
+          <a class="chip" href={link.href} rel="noopener">{link.label}</a>
+        ))}
+      </div>
+    )}
   </PageHead>
 
   {d.cover && (
-    <div class="wrap" style="padding-top:2.5rem">
-      <Image src={d.cover} alt={d.coverAlt ?? d.title} widths={[480, 900, 1400]} sizes="(min-width: 76rem) 72rem, 100vw" loading="eager" />
-    </div>
+    <figure class="proj-cover">
+      <Image
+        src={d.cover}
+        alt={d.coverAlt ?? d.title}
+        widths={[640, 1100, 1800, 2400]}
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
+      />
+      {d.coverCaption && (
+        <figcaption class="wrap">
+          <span class="label">Figure</span>
+          <p>{d.coverCaption}</p>
+        </figcaption>
+      )}
+    </figure>
   )}
+
+  {/* The hook. Numbers before prose, because this is what gets read. */}
+  <Metrics items={d.metrics} label="Impact" />
 
   <section class="section">
     <div class="wrap">
@@ -85,22 +159,288 @@ const path = `/work/${project.id}`;
         </article>
 
         <aside class="doc-aside">
-          <nav class="toc" aria-label="On this page">
-            <p class="label">On this page</p>
-            <ul>
-              {headings
-                .filter((h) => h.depth === 2)
-                .map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
-            </ul>
-          </nav>
+          {sections.length > 0 && (
+            <nav class="toc" aria-label="On this page">
+              <p class="label">On this page</p>
+              <ul>
+                {sections.map((s) => <li><a href={`#${s.slug}`}>{s.text}</a></li>)}
+              </ul>
+            </nav>
+          )}
         </aside>
       </div>
     </div>
   </section>
 
-  <section class="section">
+  {d.steps.length > 0 && (
+    <section class="section" id="how-it-works">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>How it works</h2>
+          <span class="label">{d.steps.length} stages</span>
+        </div>
+
+        <ol class="steps">
+          {d.steps.map((step, i) => (
+            <li class="step">
+              <span class="step-n">{String(i + 1).padStart(2, '0')}</span>
+              <div class="step-body">
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+                {step.detail && <p class="step-detail">{step.detail}</p>}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
+
+  {d.figures.length > 0 && (
+    <section class="section" id="figures">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Figures</h2>
+        </div>
+
+        <div class="figures">
+          {d.figures.map((fig, i) => (
+            <figure class:list={['fig', isWide(fig, i) && 'is-wide']}>
+              {fig.video ? (
+                /* Poster is a real optimised image, so the still is sharp and
+                   the clip itself is never fetched until it scrolls into view. */
+                <video
+                  class="fig-video"
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                  poster={posters.get(fig.video.mp4) ?? fig.src.src}
+                  width={fig.src.width}
+                  height={fig.src.height}
+                  aria-label={fig.alt}
+                >
+                  {fig.video.webm && <source src={fig.video.webm} type="video/webm" />}
+                  <source src={fig.video.mp4} type="video/mp4" />
+                </video>
+              ) : (
+                <Image
+                  src={fig.src}
+                  alt={fig.alt}
+                  widths={[480, 900, 1400]}
+                  sizes={isWide(fig, i) ? '(min-width: 60rem) 62rem, 100vw' : '(min-width: 60rem) 34rem, 100vw'}
+                  loading="lazy"
+                />
+              )}
+              <figcaption>
+                <span class="label">{fig.label ?? `Fig. ${i + 1}`}</span>
+                <p>{fig.caption}</p>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {d.outcomes.length > 0 && (
+    <section class="section" id="outcomes">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Outcomes</h2>
+        </div>
+
+        <ul class="outcomes">
+          {d.outcomes.map((o) => (
+            <li>
+              <h3>{o.title}</h3>
+              <p>{o.body}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {(d.stack.length > 0 || d.sponsors.length > 0) && (
+    <section class="section">
+      <div class="wrap">
+        <div class="proj-foot">
+          {d.stack.length > 0 && (
+            <div id="stack">
+              <div class="section-head"><h2>Stack</h2></div>
+              <dl class="stack">
+                {d.stack.map((group) => (
+                  <div>
+                    <dt class="label">{group.group}</dt>
+                    <dd>{group.items.join(', ')}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          )}
+
+          {d.sponsors.length > 0 && (
+            <div id="partners">
+              <div class="section-head"><h2>Partners</h2></div>
+              <ul class="sponsors">
+                {d.sponsors.map((s) => (
+                  <li>
+                    {s.href ? (
+                      <a href={s.href} rel="noopener">{s.name}</a>
+                    ) : (
+                      <span class="sponsor-name">{s.name}</span>
+                    )}
+                    {s.role && <span class="sponsor-role">{s.role}</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        {d.team.length > 0 && (
+          <div class="team-block">
+            <p class="label">Project team</p>
+            <ul class="team">
+              {d.team.map((p) => (
+                <li>
+                  <span class="team-name">{p.name}</span>
+                  {p.affiliation && <span class="team-aff">{p.affiliation}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+  {/* Funder marks sit on a white plate so they read in both themes. */}
+  {(d.sponsors.some((s) => s.logo) || d.funding) && (
+    <section class="section funders" aria-label="Funding">
+      <div class="wrap">
+        {d.sponsors.some((s) => s.logo) && (
+          <ul class="funder-logos">
+            {d.sponsors.filter((s) => s.logo).map((s) => (
+              <li>
+                {s.href ? (
+                  <a href={s.href} rel="noopener" aria-label={s.name} title={s.name}>
+                    <Image src={s.logo!} alt={s.name} widths={[240, 480]} sizes="240px" loading="lazy" />
+                  </a>
+                ) : (
+                  <Image src={s.logo!} alt={s.name} widths={[240, 480]} sizes="240px" loading="lazy" />
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+        {d.funding && <p class="funding-note">{d.funding}</p>}
+      </div>
+    </section>
+  )}
+
+  {d.related.length > 0 && (
+    <section class="section" id="related">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Related</h2>
+          {d.related.some((r) => r.href.startsWith('/publications/')) && (
+            <a class="arrow" href="/publications">All publications</a>
+          )}
+        </div>
+
+        <ul class="related">
+          {d.related.map((r) => {
+            const external = /^https?:\/\//.test(r.href);
+            return (
+              <li>
+                <a href={r.href} {...(external && { rel: 'noopener', target: '_blank' })}>
+                  <span class:list={['related-label', external && 'is-external']}>{r.label}</span>
+                  {r.note && <span class="related-note">{r.note}</span>}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {/* Must stay at the top level of the template. Astro only hoists script
+      tags it can see statically, so wrapping this in a conditional silently
+      drops it from the bundle and every clip stays frozen on its poster. */}
+  <script>
+    // Clips play only while on screen: five looping videos running at once is
+    // the difference between a fast page and a hot laptop. Reduced-motion
+    // users get a poster and ordinary controls instead.
+    const vids = document.querySelectorAll<HTMLVideoElement>('video.fig-video');
+
+    if (vids.length) {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        vids.forEach((v) => {
+          v.setAttribute('controls', '');
+          v.preload = 'metadata';
+        });
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              const v = e.target as HTMLVideoElement;
+              if (e.isIntersecting) {
+                // Autoplay refused: leave the poster up and expose controls.
+                v.play().catch(() => v.setAttribute('controls', ''));
+              } else {
+                v.pause();
+              }
+            });
+          },
+          { rootMargin: '150px 0px', threshold: 0.15 },
+        );
+        vids.forEach((v) => {
+          io.observe(v);
+          // Click to pause, for anyone reading the detail in a frame.
+          v.addEventListener('click', () => (v.paused ? v.play() : v.pause()));
+        });
+      }
+    }
+  </script>
+
+  {/* Last thing before the contact banner: the reader has finished this
+      project, so the only moves left are another one or an email. */}
+  <nav class="proj-nav" aria-label="More work">
+    {prev ? (
+      <a class="proj-nav-item" href={`/work/${prev.id}`} rel="prev">
+        <span class="label">← Previous</span>
+        <span class="proj-nav-title">{prev.data.title}</span>
+      </a>
+    ) : (
+      <a class="proj-nav-item" href="/work">
+        <span class="label">← Index</span>
+        <span class="proj-nav-title">All work</span>
+      </a>
+    )}
+    {next ? (
+      <a class="proj-nav-item is-end" href={`/work/${next.id}`} rel="next">
+        <span class="label">Next →</span>
+        <span class="proj-nav-title">{next.data.title}</span>
+      </a>
+    ) : (
+      <a class="proj-nav-item is-end" href="/work">
+        <span class="label">Index →</span>
+        <span class="proj-nav-title">All work</span>
+      </a>
+    )}
+  </nav>
+
+  <section class="cta">
     <div class="wrap">
-      <a class="arrow" href="/work">Back to all work</a>
+      <p class="label" style="margin-bottom:1.25rem">Work like this</p>
+      <a class="big" href={`mailto:${SITE.email}`}>Start a<br /><span>conversation →</span></a>
+      <p class="prose" style="margin-top:2rem">
+        Available for consulting engagements and research collaborations at this
+        scale. Email <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+      </p>
     </div>
   </section>
 </BaseLayout>

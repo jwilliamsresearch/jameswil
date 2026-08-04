@@ -1,0 +1,38 @@
+---
+/**
+ * The impact band from the project pages, lifted out so the index and profile
+ * pages can carry numbers above the fold too. Four entries reads best: the
+ * grid steps 4 to 2 to 1, so three or five will not orphan.
+ */
+export interface Metric {
+  value: string;
+  label: string;
+  note?: string;
+}
+
+export interface Props {
+  items: Metric[];
+  /** Screen-reader name for the region. */
+  label?: string;
+  /** Drop the section's own vertical padding when it sits flush under a head. */
+  flush?: boolean;
+}
+
+const { items, label = 'Key figures', flush = true } = Astro.props;
+---
+
+{items.length > 0 && (
+  <section class:list={['section', flush && 'proj-impact']} aria-label={label}>
+    <div class="wrap">
+      <ul class="metrics">
+        {items.map((m) => (
+          <li>
+            <span class="metric-value">{m.value}</span>
+            <span class="metric-label">{m.label}</span>
+            {m.note && <span class="metric-note">{m.note}</span>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}

@@ -1,7 +1,9 @@
 ---
 import { getEntry, render } from 'astro:content';
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHead from '../components/PageHead.astro';
+import Metrics from '../components/Metrics.astro';
 import { SITE } from '../consts';
 import { personSchema, breadcrumbSchema } from '../lib/schema';
 
@@ -13,7 +15,7 @@ const d = page.data;
 ---
 
 <BaseLayout
-  title={d.label ?? 'About'}
+  title="About: Geospatial Data Science"
   description={d.description ?? SITE.description}
   type="profile"
   modifiedTime={d.updated?.toISOString()}
@@ -26,6 +28,10 @@ const d = page.data;
   ]}
 >
   <PageHead label={d.label ?? 'About'} title={d.title} lead={d.lead} />
+
+  {/* Numbers before prose, matching the project pages. These are the strongest
+      claims on the site and they were previously buried mid-paragraph. */}
+  <Metrics items={d.metrics} label="Track record" />
 
   <section class="section">
     <div class="wrap">
@@ -47,6 +53,27 @@ const d = page.data;
       </div>
     </div>
   </section>
+
+  {d.affiliations.length > 0 && (
+    <section class="section funders" aria-label="Institutions and funders">
+      <div class="wrap">
+        <p class="label" style="margin-bottom:1.25rem">Institutions and funders</p>
+        <ul class="funder-logos">
+          {d.affiliations.map((a) => (
+            <li>
+              {a.href ? (
+                <a href={a.href} rel="noopener" aria-label={a.name} title={a.name}>
+                  <Image src={a.logo} alt={a.name} widths={[240, 480]} sizes="240px" loading="lazy" />
+                </a>
+              ) : (
+                <Image src={a.logo} alt={a.name} widths={[240, 480]} sizes="240px" loading="lazy" />
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
 
   <section class="cta">
     <div class="wrap">

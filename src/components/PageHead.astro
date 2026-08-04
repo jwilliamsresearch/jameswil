@@ -13,6 +13,7 @@ const { label, title, lead, meta, document = false } = Astro.props;
 
 <section class:list={['page-head', document && 'is-document']}>
   <div class="wrap">
+    <slot name="pre" />
     {label && <span class="label">{label}</span>}
     <h1>{title}</h1>
     {lead && <p class="lead">{lead}</p>}

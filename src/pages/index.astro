@@ -55,8 +55,9 @@ const capabilities = [
       </div>
 
       <ul class="rows">
-        {projects.map((project) => (
+        {projects.map((project, i) => (
           <Row
+            label={String(i + 1).padStart(2, '0')}
             title={project.data.title}
             href={`/work/${project.id}`}
             description={project.data.summary}
