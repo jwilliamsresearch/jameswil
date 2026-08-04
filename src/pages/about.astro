@@ -1,0 +1,57 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHead from '../components/PageHead.astro';
+import { SITE } from '../consts';
+import { personSchema, breadcrumbSchema } from '../lib/schema';
+
+const page = await getEntry('pages', 'about');
+if (!page) throw new Error('Missing src/content/pages/about.md');
+
+const { Content, headings } = await render(page);
+const d = page.data;
+---
+
+<BaseLayout
+  title={d.label ?? 'About'}
+  description={d.description ?? SITE.description}
+  type="profile"
+  modifiedTime={d.updated?.toISOString()}
+  jsonLd={[
+    personSchema(),
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'About', path: '/about' },
+    ]),
+  ]}
+>
+  <PageHead label={d.label ?? 'About'} title={d.title} lead={d.lead} />
+
+  <section class="section">
+    <div class="wrap">
+      <div class="doc-grid">
+        <article class="doc-main prose">
+          <Content />
+        </article>
+
+        <aside class="doc-aside">
+          <nav class="toc" aria-label="On this page">
+            <p class="label">On this page</p>
+            <ul>
+              {headings
+                .filter((h) => h.depth === 2)
+                .map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+            </ul>
+          </nav>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap">
+      <p class="label" style="margin-bottom:1.25rem">Contact</p>
+      <a class="big" href="/contact">Get in<br /><span>touch →</span></a>
+    </div>
+  </section>
+</BaseLayout>

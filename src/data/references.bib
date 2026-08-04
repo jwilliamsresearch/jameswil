@@ -1,0 +1,428 @@
+@article{Hernandez-Nava2026,
+  bibtex_show  = {true},
+  abbr         = {Preprints},
+  author       = {Hernandez-Nava, Carlos and Mata-Rivera, Miguel-Felix and Zagal-Flores, Roberto-Eswart and Williams, James},
+  title        = {Macro-Regional Spatial Patterns of Ambient Air Pollution and Avoidable Hospitalizations for Community-Acquired Pneumonia in Mexico (2013–2020)},
+  journal      = {Preprints},
+  year         = {2026},
+  month        = {March},
+  doi          = {10.20944/preprints202603.0145.v1},
+  url          = {https://doi.org/10.20944/preprints202603.0145.v1},
+  abstract     = {Ambient air pollution significantly contributes to respiratory illnesses, yet little is known about how industrial emissions are linked to preventable hospitalizations across atmospheric basins in middle-income countries. This study develops a basin-based geo-matics framework to examine the spatial and temporal relationship between industrial pollutants and age- and sex-adjusted avoidable hospitalizations for community-acquired pneumonia (PQI 11) in Mexico from 2013 to 2020. Using state-level data grouped into eight macro-regions, we combine bivariate choropleth maps, Pearson correlations, linear regression, and longitudinal time-series analysis to identify spatial clusters of high risk and to estimate regional sensitivities to changes in PM2.5, SO2, NOx, and volatile organic compound emissions. The findings reveal notable regional differences: northern border states and the Mexico City metropolitan basin form persistent high–high clusters where elevated emissions coincide with high PQI 11 rates, while coastal and peninsular regions show lower hospitalization burdens despite medium emission levels. Although national industrial PM2.5 emissions decreased over the study period, several macro-regions—particularly CDMX_Edomex, Centro, and Centro Norte—experienced significant increases in avoidable hospitalizations and decoupled emission–health patterns. Correlation matrices and regression slopes suggest that the strength and even direction of links between pollutants and PQI 11 vary across macro-regions, with emission-responsive patterns in Centro Norte and weak or inverse relationships in Peninsula and Pacifico Sur. These findings demonstrate that national averages obscure critical spatial disparities and highlight the value of basin-based geomatics approaches for regional air-quality governance, spatial decision support, and primary-care planning aimed at reducing preventable respiratory hospitalizations.},
+  keywords     = {Air Pollution; Pneumonia; Hospitalizations; Mexico; Spatial Analysis; Public Health},
+  howpublished = {Preprint}
+}
+
+@inproceedings{Williams2026HWSFramework,
+  bibtex_show = {true},
+  abbr        = {IOCUS},
+  address     = {Basel, Switzerland},
+  title       = {Multi-Resolution H3 Walkability Surfaces: A Scalable Framework for Cross-City Pedestrian Environment Assessment},
+  booktitle   = {Proceedings of the 1st International Online Conference on Urban Sciences},
+  publisher   = {MDPI},
+  author      = {Williams, James and Al-Talabany, A.},
+  year        = {2026},
+  month       = {May},
+  url         = {/assets/papers/Williams2026HWSFramework.pdf},
+  abstract    = {Introduction: Quantifying urban walkability at fine spatial resolution is essential for evidence-based active travel planning. Yet, existing indices typically rely on coarse administrative units or proprietary data, which impedes cross-city comparisons. This study presents the Hexagonal Walkability Surface (HWS) framework: a configuration-driven pipeline for computing multi-resolution walkability indices from geospatial data. Methods: HWS employs the H3 discrete global grid to tessellate city extents at four hierarchical resolutions (levels 8-11). Five pedestrian-environment features are extracted per hexagon: (1) footway and path density (pedestrian edge length per km²); (2) point-of-interest accessibility, combining in-cell counts with an inverse-distance-weighted proximity score; (3) land-use diversity as Shannon entropy of intersecting land-use classes; (4) greenspace proximity, integrating coverage proportion with distance decay; and (5) road-safety ratio of pedestrian-friendly to total edge length. Street network and land-use data are sourced from OpenStreetMap; place data is augmented with Overture Maps (2026-02-18) via DuckDB S3 queries. Features are min-max normalised and combined as a weighted composite score (0-100). Spatial autocorrelation (Getis-Ord Gi*) is used to identify clusters of walkability. Results: In Nottingham and Bristol, United Kingdom, the framework produces 1,178-57,700 and 2,581-126,518 hexagons per city, respectively, across resolutions 9-11. Across the resolutions, agreement is high (Spearman ρ = 0.963-0.971 between adjacent levels, all p < 0.001), confirming multi-scale consistency. At resolution 9 (roughly neighbourhood scale), intra-urban variation is observed in both cities (σ = 11.4 and 10.1 score points respectively), with city-centre hexagons clustering as hotspots and peripheral areas as coldspots. Gini coefficients indicate greater inequality in walkability in Nottingham (0.36) than in Bristol (0.26). Conclusions: HWS provides a reproducible, data-agnostic methodology extensible to any city with OSM coverage. The multi-resolution design could support both strategic (neighbourhood) and street-block planning decisions. By making fine-grained walkability assessment accessible to researchers and planners without proprietary data or bespoke infrastructure, HWS lowers the barrier to evidence-based active travel policy at the urban scale.},
+  keywords    = {Walkability; Hexagonal Grid; H3; Urban Analytics; OpenStreetMap; Overture Maps}
+}
+
+@misc{AnythingPOI_Australia2026,
+  bibtex_show = {true},
+  author = {Williams, James},
+  title  = {AnythingPOI - Australia POI Dataset v0.1},
+  year   = {2026},
+  journal= {Zenodo},
+  doi    = {10.5281/ZENODO.20013770},
+  url    = {https://zenodo.org/doi/10.5281/zenodo.20013770},
+  abstract = {A unified, open point-of-interest (POI) dataset for Australia containing 1,735,980 POIs produced by the AnythingPOI pipeline, which fuses OpenStreetMap and Overture Maps Foundation data using H3-indexed spatial conflation, Jaro-Winkler name matching, and multi-signal confidence scoring.
+
+Source breakdown:
+
+OSM-only: 320,149 (18.4%) — from OpenStreetMap contributors (ODbL 1.0)
+
+Overture-only: 1,364,195 (78.6%) — from Overture Maps Foundation (CDLA-Permissive-2.0)
+
+Conflated (both sources matched): 51,636 (3.0%)
+
+Top categories: Professional & Business, Retail, Food & Beverage, Transportation, Healthcare. Full taxonomy: 18 Tier-1 categories, 196 Tier-2 subcategories.
+
+Contents: GeoParquet files (one per Tier-1 category), PMTiles v3 for interactive map visualisation, and coverage statistics CSVs. Each POI carries a confidence_score (0.01–0.99) reflecting the strength of the conflation evidence across spatial, name, website, phone, postcode, and Wikidata signals.
+
+Attribution: This dataset contains information from OpenStreetMap (© OpenStreetMap contributors, ODbL 1.0 — openstreetmap.org/copyright) and Overture Maps Foundation (CDLA-Permissive-2.0 — overturemaps.org).
+
+License: Open Database License (ODbL) 1.0. Any public use of this database or works produced from it must include the above attribution. Derivative databases must also be released under ODbL.}
+}
+
+@misc{AnythingPOI_Canada2026,
+  bibtex_show = {true},
+  author = {Williams, James},
+  title  = {AnythingPOI - Canada POI Dataset v0.1},
+  year   = {2026},
+  journal= {Zenodo},
+  doi    = {10.5281/ZENODO.20009008},
+  url    = {https://zenodo.org/doi/10.5281/zenodo.20009008},
+  abstract = {A unified, open point-of-interest (POI) dataset for Canada containing 5,565,256 POIs produced by the AnythingPOI pipeline, which fuses OpenStreetMap and Overture Maps Foundation data using H3-indexed spatial conflation, Jaro-Winkler name matching, and multi-signal confidence scoring.
+
+Source breakdown:
+
+OSM-only: 451,872 (8.1%) — from OpenStreetMap contributors (ODbL 1.0)
+
+Overture-only: 5,037,979 (90.5%) — from Overture Maps Foundation (CDLA-Permissive-2.0)
+
+Conflated (both sources matched): 75,405 (1.4%)
+
+Top categories: Professional & Business, Retail, Food & Beverage, Healthcare, Services. Full taxonomy: 18 Tier-1 categories, 196 Tier-2 subcategories.
+
+Contents: GeoParquet files (one per Tier-1 category), PMTiles v3 for interactive map visualisation, and coverage statistics CSVs. Each POI carries a confidence_score (0.01–0.99) reflecting the strength of the conflation evidence across spatial, name, website, phone, postcode, and Wikidata signals.
+
+Attribution: This dataset contains information from OpenStreetMap (© OpenStreetMap contributors, ODbL 1.0 — openstreetmap.org/copyright) and Overture Maps Foundation (CDLA-Permissive-2.0 — overturemaps.org).
+
+License: Open Database License (ODbL) 1.0. Any public use of this database or works produced from it must include the above attribution. Derivative databases must also be released under ODbL.}
+}
+
+@misc{AnythingPOI_Germany2026,
+  bibtex_show = {true},
+  author = {Williams, James},
+  title  = {AnythingPOI - Germany POI Dataset v0.1},
+  year   = {2026},
+  journal= {Zenodo},
+  doi    = {10.5281/ZENODO.20013689},
+  url    = {https://zenodo.org/doi/10.5281/zenodo.20013689},
+  abstract = {A unified, open point-of-interest (POI) dataset for Germany containing 6,763,796 POIs produced by the AnythingPOI pipeline, which fuses OpenStreetMap and Overture Maps Foundation data using H3-indexed spatial conflation, Jaro-Winkler name matching, and multi-signal confidence scoring.
+
+Source breakdown:
+
+OSM-only: 2,420,344 (35.8%) — from OpenStreetMap contributors (ODbL 1.0)
+
+Overture-only: 4,129,920 (61.1%) — from Overture Maps Foundation (CDLA-Permissive-2.0)
+
+Conflated (both sources matched): 213,532 (3.2%)
+
+Top categories: Professional & Business, Transportation, Retail, Food & Beverage, Other / Uncategorized. Full taxonomy: 18 Tier-1 categories, 196 Tier-2 subcategories.
+
+Contents: GeoParquet files (one per Tier-1 category), PMTiles v3 for interactive map visualisation, and coverage statistics CSVs. Each POI carries a confidence_score (0.01–0.99) reflecting the strength of the conflation evidence across spatial, name, website, phone, postcode, and Wikidata signals.
+
+Attribution: This dataset contains information from OpenStreetMap (© OpenStreetMap contributors, ODbL 1.0 — openstreetmap.org/copyright) and Overture Maps Foundation (CDLA-Permissive-2.0 — overturemaps.org).
+
+License: Open Database License (ODbL) 1.0. Any public use of this database or works produced from it must include the above attribution. Derivative databases must also be released under ODbL.}
+}
+
+@misc{AnythingPOI_Netherlands2026,
+  bibtex_show = {true},
+  author = {Williams, James},
+  title  = {AnythingPOI - Netherlands POI Dataset v0.1},
+  year   = {2026},
+  journal= {Zenodo},
+  doi    = {10.5281/ZENODO.20013826},
+  url    = {https://zenodo.org/doi/10.5281/zenodo.20013826},
+  abstract = {A unified, open point-of-interest (POI) dataset for Netherlands containing 1,782,538 POIs produced by the AnythingPOI pipeline, which fuses OpenStreetMap and Overture Maps Foundation data using H3-indexed spatial conflation, Jaro-Winkler name matching, and multi-signal confidence scoring.
+
+Source breakdown:
+
+OSM-only: 280,707 (15.7%) — from OpenStreetMap contributors (ODbL 1.0)
+
+Overture-only: 1,451,063 (81.4%) — from Overture Maps Foundation (CDLA-Permissive-2.0)
+
+Conflated (both sources matched): 50,768 (2.8%)
+
+Top categories: Professional & Business, Retail, Food & Beverage, Services, Healthcare. Full taxonomy: 18 Tier-1 categories, 196 Tier-2 subcategories.
+
+Contents: GeoParquet files (one per Tier-1 category), PMTiles v3 for interactive map visualisation, and coverage statistics CSVs. Each POI carries a confidence_score (0.01–0.99) reflecting the strength of the conflation evidence across spatial, name, website, phone, postcode, and Wikidata signals.
+
+Attribution: This dataset contains information from OpenStreetMap (© OpenStreetMap contributors, ODbL 1.0 — openstreetmap.org/copyright) and Overture Maps Foundation (CDLA-Permissive-2.0 — overturemaps.org).
+
+License: Open Database License (ODbL) 1.0. Any public use of this database or works produced from it must include the above attribution. Derivative databases must also be released under ODbL.}
+}
+
+@misc{AnythingPOI_Turkiye2026,
+  bibtex_show = {true},
+  author = {Williams, James},
+  title  = {AnythingPOI - Türkiye POI Dataset v0.1},
+  year   = {2026},
+  journal= {Zenodo},
+  doi    = {10.5281/ZENODO.20013733},
+  url    = {https://zenodo.org/doi/10.5281/zenodo.20013733},
+  abstract = {A unified, open point-of-interest (POI) dataset for Türkiye containing 2,201,304 POIs produced by the AnythingPOI pipeline, which fuses OpenStreetMap and Overture Maps Foundation data using H3-indexed spatial conflation, Jaro-Winkler name matching, and multi-signal confidence scoring.
+
+Source breakdown:
+
+OSM-only: 306,263 (13.9%) — from OpenStreetMap contributors (ODbL 1.0)
+
+Overture-only: 1,864,146 (84.7%) — from Overture Maps Foundation (CDLA-Permissive-2.0)
+
+Conflated (both sources matched): 30,895 (1.4%)
+
+Top categories: Retail, Professional & Business, Food & Beverage, Services, Community. Full taxonomy: 18 Tier-1 categories, 196 Tier-2 subcategories.
+
+Contents: GeoParquet files (one per Tier-1 category), PMTiles v3 for interactive map visualisation, and coverage statistics CSVs. Each POI carries a confidence_score (0.01–0.99) reflecting the strength of the conflation evidence across spatial, name, website, phone, postcode, and Wikidata signals.
+
+Attribution: This dataset contains information from OpenStreetMap (© OpenStreetMap contributors, ODbL 1.0 — openstreetmap.org/copyright) and Overture Maps Foundation (CDLA-Permissive-2.0 — overturemaps.org).
+
+License: Open Database License (ODbL) 1.0. Any public use of this database or works produced from it must include the above attribution. Derivative databases must also be released under ODbL.}
+}
+
+@misc{AnythingPOI_UK2026,
+  bibtex_show = {true},
+  author = {Williams, James},
+  title  = {AnythingPOI - United Kingdom POI Dataset v0.1},
+  year   = {2026},
+  journal= {Zenodo},
+  doi    = {10.5281/ZENODO.20009115},
+  url    = {https://zenodo.org/doi/10.5281/zenodo.20009115},
+  abstract = {A unified, open point-of-interest (POI) dataset for United Kingdom containing 4,622,174 POIs produced by the AnythingPOI pipeline, which fuses OpenStreetMap and Overture Maps Foundation data using H3-indexed spatial conflation, Jaro-Winkler name matching, and multi-signal confidence scoring.
+
+Source breakdown:
+
+OSM-only: 947,908 (20.5%) — from OpenStreetMap contributors (ODbL 1.0)
+
+Overture-only: 3,551,749 (76.8%) — from Overture Maps Foundation (CDLA-Permissive-2.0)
+
+Conflated (both sources matched): 122,517 (2.7%)
+
+Top categories: Professional & Business, Retail, Food & Beverage, Other / Uncategorized, Transportation. Full taxonomy: 18 Tier-1 categories, 196 Tier-2 subcategories.
+
+Contents: GeoParquet files (one per Tier-1 category), PMTiles v3 for interactive map visualisation, and coverage statistics CSVs. Each POI carries a confidence_score (0.01–0.99) reflecting the strength of the conflation evidence across spatial, name, website, phone, postcode, and Wikidata signals.
+
+Attribution: This dataset contains information from OpenStreetMap (© OpenStreetMap contributors, ODbL 1.0 — openstreetmap.org/copyright) and Overture Maps Foundation (CDLA-Permissive-2.0 — overturemaps.org).
+
+License: Open Database License (ODbL) 1.0. Any public use of this database or works produced from it must include the above attribution. Derivative databases must also be released under ODbL.}
+}
+
+@article{Williams2026GEON,,
+  bibtex_show  = {true},
+  abbr         = {TechRxiv},
+  selected     = {true},
+  author       = {Williams, James},
+  title        = {Geospatial Experience-Oriented Notation (GEON): A Semantic Format for LLM-Native Spatial Intelligence},
+  journal      = {TechRxiv},
+  year         = {2026},
+  month        = {February},
+  doi          = {10.36227/techrxiv.177160645.54245440/v1},
+  abstract     = {Existing geospatial data formats such as GeoJSON, Well-Known Text (WKT), and CityGML, are optimised for geometric computation and rendering. While effective for Geographic Information Systems (GIS), these approaches present limitations when used with Large Language Models (LLMs). For example, coordinate arrays carry no inherent semantic meaning, spatial relationships require computational geometry to extract, and the human experience of place is usually absent. This manuscript introduces foundational work on Geospatial Experience-Oriented Notation (GEON), a text-based format that bridges machine-optimised geospatial data and human-readable spatial descriptors. GEON encodes identity, geometry, purpose, experiential qualities, spatial relationships, temporal patterns, and data provenance in a readable and structured syntax designed for human comprehension and LLM reasoning. This manuscript presents the initial specification, reference implementations in Python, Rust, and JavaScript, and an empirical evaluation demonstrating how GEON achieves 20\% fewer tokens than equivalent GeoJSON files, while encoding 31\% more semantic facts per token. This manuscript explores the implementation and how LLMs reason about place-making, urban design interventions, and spatial intelligence tasks that existing formats struggle to support.},
+  keywords     = {Geospatial Data; Large Language Models; Spatial Intelligence; Place-Based Computing; Semantic Representation; Urban Computing},
+  url          = {/assets/papers/Williams2026GEON.pdf},
+  howpublished = {Preprint}
+}
+
+@inproceedings{Williams2021,,
+  bibtex_show = {true},
+  abbr        = {LBS},
+  address     = {Glasgow, UK/online},
+  title       = {Survey of Leisure Walking Behaviours and Activity Tracking Use: Emerging Themes and Design Considerations},
+  doi         = {10.34726/1760},
+  booktitle   = {Proceedings of the 16th International Conference on Location Based Services (LBS 2021)},
+  publisher   = {TUWien},
+  author      = {Williams, James and Pinchin, James and Hazzard, Adrian and Priestnall, Gary},
+  year        = {2021},
+  url         = {/assets/papers/Williams2021.pdf},
+  pages       = {136–141},
+  abstract    = {In this paper we present a work in progress analysis of a leisure walking behaviour survey that focuses on walkers' habits and experiences. We are specifically interested in the use of mobile tracking applications in this context to help design and deploy future technologies that can better support engaging leisure walks through synthesising previous behaviours and experiences. This survey collected 329 responses relating to self-reported walking behaviour patterns and mobile activity tracker use. In the emerging analysis we identified design considerations for future walking-focused applications, emphasizing the subjective and personal nature of walking routes.},
+  keywords    = {Mobile Activity Tracking; Walking Behaviour; Mobile Geospatial Computing},
+  eprint      = {}
+}
+
+@inproceedings{Williams2022,,
+  bibtex_show = {true},
+  abbr        = {SDSS},
+  selected    = {true},
+  address     = {Online},
+  title       = {Context for Leisure Walking Routes: A Vision for a Spatial-Platial Approach},
+  doi         = {10.25436/E20W2J},
+  booktitle   = {Spatial Data Science Symposium 2022 Short Paper Proceedings},
+  author      = {Williams, James and Cavazzi, Stefano and Pinchin, James and Hazzard, Adrian and Priestnall, Gary and Ballatore, Andrea},
+  year        = {2022},
+  url         = {/assets/papers/Williams2022.pdf},
+  abstract    = {Providing recommendations for interesting and engaging leisure walking routes is a complex problem due to the subjective and personal nature of the activity. Existing work has often focused on recommending the quickest or most popular walks. However, these routes often lack detail on the contextual and experiential factors of walks and do not attempt to match the requirements with those of users. This article presents a vision of how more contextual detail can be applied to walking routes. We consider how existing analysis and spatial data mining techniques, including real-time clustering, viewshed analysis, and colocation patterns, could be used to extend a place-based understanding of leisure walking routes. By using spatial methods to extrapolate a rich platial understanding of the locations of a walk, the proposed methods in this article will support an emerging framework for curating engaging leisure walking experiences, recommending routes beyond those of the quickest or the most popular.},
+  keywords    = {Leisure Walking; Fuzzy Geospatial Data; Route Recommendations; Platial Information},
+  eprint      = {}
+}
+
+@inproceedings{Williams2022b,,
+  bibtex_show = {true},
+  abbr        = {LBS},
+  address     = {Munich, Germany},
+  title       = {An Emerging Conceptual Model for Curating Engaging Leisure Walking Recommendations},
+  booktitle   = {Proceedings of the 17th International Conference on Location Based Services (LBS 2022)},
+  author      = {Williams, James and Pinchin, James and Hazzard, Adrian and Priestnall, Gary and Cavazzi, Stefano and Ballatore, Andrea},
+  year        = {2022},
+  url         = {/assets/papers/Williams2022b.pdf},
+  pages       = {1-3},
+  abstract    = {Providing routes to leisure walkers requires alternative recommendation scenarios to those used in tourism routing systems. In this paper, we present an emerging conceptual model of three scenarios for curating leisure walking route recommendations. Our recommendation scenarios consider the highest ranked similar walks, routes for new application users, and a progressively changing route recommendation scenario. Conceptual models for these scenarios are presented and the challenges in completing this research are considered. Feedback received on these early conceptual models will be used to further design a recommendation framework for curating engaging leisure walking experiences.},
+  keywords    = {Leisure Walking; Location Based Services; Route Recommendation; Mobile Geospatial Computing},
+  eprint      = {}
+}
+
+@inproceedings{Williams2023,,
+  bibtex_show = {true},
+  abbr        = {GISRUK},
+  address     = {Glasgow, Scotland},
+  title       = {WalkGIS: Exploring Platial Analysis of Leisure Walks via Linked Video Narratives},
+  doi         = {10.5281/zenodo.7825302},
+  booktitle   = {31st Annual Geographical Information Science Research UK Conference (GISRUK)},
+  author      = {Williams, James and Pinchin, James and Hazzard, Adrian and Priestnall, Gary and Cavazzi, Stefano and Ballatore, Andrea},
+  year        = {2023},
+  url         = {/assets/papers/Williams2023.pdf},
+  pages       = {1–6},
+  abstract    = {Extracting rich contextual information from study participants presents an interesting challenge when the expected results are uncertain. This article presents the design of a contextual geographic information system (GIS) to extract platial information from a multimodal data set (audio, video, and GPS) collected during a ‘think-aloud’ leisure walking study. WalkGIS enables transcriptions, labelling, and platial analysis to be performed within one system, with data being linked and coordinated to form linked video narratives.},
+  keywords    = {Visual Analytics; Leisure Walking; Platial Information; Geographic Information Systems; Spatial Video Narratives},
+  eprint      = {}
+}
+
+@inproceedings{Williams2023b,,
+  bibtex_show = {true},
+  abbr        = {PLATIAL},
+  selected    = {true},
+  address     = {Dortmund, Germany},
+  title       = {Emerging Platial Narratives and Themes from a Leisure Walking Study},
+  doi         = {10.5281/zenodo.8286259},
+  booktitle   = {Fourth International Symposium on Platial Information Science (PLATIAL'23)},
+  author      = {Williams, James and Pinchin, James and Hazzard, Adrian and Priestnall, Gary and Cavazzi, Stefano and Ballatore, Andrea},
+  year        = {2023},
+  url         = {/assets/papers/Williams2023b.pdf},
+  pages       = {23-28},
+  abstract    = {This article presents the preliminary results of a think-aloud leisure walking study, identifying the key themes and platial narratives. A think-aloud study was conducted to explore what and how leisure walkers engaged with while walking. Our emerging results are presented in the context of an approach to extracting and understanding the platial experience during the study. The early findings suggest that the types of places engaged with while walking and the characteristics of these places are varied, while navigation and wayfinding have an impact on the selected route and the changes that occur during the walk. Our future work will now focus on further analysing these results and using them to improve the recommendation of leisure walking routes.},
+  keywords    = {Leisure Walking; Platial Information; Think-aloud Study; Route Recommendation; Mobile Geospatial Computing},
+  eprint      = {}
+}
+
+@article{WilliamsCoordinates,
+  bibtex_show  = {true},
+  abbr         = {Coordinates},
+  title        = {Survey of leisure walking behaviours and activity tracking use},
+  journal      = {Coordinates Magazine},
+  publisher    = {Coordinates},
+  author       = {Williams, James and Pinchin, James and Hazzard, Adrian and Priestnall, Gary},
+  year         = {2023},
+  pages        = {13-15},
+  url          = {https://mycoordinates.org/survey-of-leisure-walking-behaviours-and-activity-tracking-use/},
+  keywords     = {Magazine},
+  keywords     = {Navigation, Mobile Activity Tracking; Walking Behaviour; Mobile Geospatial Computing},
+  howpublished = {https://mycoordinates.org/pdf/jan23.pdf}
+}
+
+@mastersthesis{WilliamsThesis2020,,
+  bibtex_show = {true},
+  abbr        = {MSc},
+  title       = {FinVis: Visualizing the
+                 Complex Nature of
+                 Financial Markets},
+  author      = {Williams, James},
+  school      = {School of Computer Science, University of Nottingham},
+  address     = {Nottingham, United Kingdom},
+  keywords    = {Financial Visualization; Visual Analysis; Information Visualization; Financial Data; Stock Markets; Finance Analytics},
+  year        = {2020},
+  url         = {/assets/papers/WilliamsThesis2020.pdf},
+  abstract    = {Investors are constantly looking for insights through comparisons on stock market data to
+                 assist in the discovery of well-priced stocks. Modern stock market applications and research
+                 allow for a range of visualizations to be produced whilst enabling the viewing of complete
+                 datasets, however, these tools are often split, not providing queries and analysis in the same
+                 view, therefore, limiting the potential of the proposed solution. Within this thesis, a new
+                 system for performing analysis and comparison is proposed, a web-based application which
+                 is able to assist in the exploratory visual analysis and visualization generation of financial
+                 data. FinVis allows for over 500 stocks to be queried and 10,000 to be imported, before
+                 displaying interactive and customizable visualizations to assist in the discovery of bargains
+                 or good investments on the market. The application includes tools to save, store and load
+                 queries alongside a visual analytic display to enable customization and more complex
+                 individual views to be generated. A complete set of interactions are also provided to the
+                 user, whilst enabling all of this exploration to take place with real-time and historical data
+                 being provided through a financial API to the user’s web browser. The thesis enables future
+                 work within the area of exploratory financial visualization to take place, providing core
+                 concepts in a comparative nature to potential researchers and investors alike.}
+}
+
+
+@inproceedings{HernandezNava2025Diabetes,
+  bibtex_show = {true},
+  abbr        = {W2GIS},
+  author      = {Hernandez-Nava, Carlos and Williams, James and Flores-Hernandez, Sergio and Mata-Rivera, Miguel-Felix},
+  editor      = {Mata-Rivera, Miguel Felix and Zagal-Flores, Roberto and Siabato, Willington},
+  title       = {Diabetes Disparities in Mexico: A Spatio-Temporal and Marginalization Index Analysis},
+  booktitle   = {Web and Wireless Geographical Information Systems},
+  year        = {2025},
+  publisher   = {Springer Nature Switzerland},
+  address     = {Cham},
+  pages       = {90--104},
+  isbn        = {978-3-032-01723-9},
+  doi         = {10.1007/978-3-032-01723-9_7},
+  abstract    = {Understanding the geospatial and temporal distribution of diabetes mellitus in Mexico can be an essential tool in supporting vulnerable populations and addressing health inequalities. This article presents a spatio-temporal investigation of patients aged 18 years and older with diabetes mellitus in Mexico, associated with geographical area and a temporal range from 2005 to 2022. This approach includes calculating diabetes-related hospitalizations and deaths and its association with the margination index segmented into eight geographical areas of Mexico. Furthermore, this research stratifies based upon age group and type of medical institute of the health services in Mexico. The main contribution of this research is to explore the relationship between diabetes-related hospitalizations, deaths, geographical area, age, sex, and margination index of populations to support preventive action. The results highlight that adults between the ages of 45 and 64 years old who live in areas with a high margination index have a greater likelihood of suffering complications related to diabetes. The age-adjusted rate of DRAH shows that the Peninsula has the highest values among geographical areas. Research will now continue to explore mapping interventions to specific states and external datasets, to further extrapolate the results of the analysis.},
+  keywords    = {Diabetes; Health Disparities; Spatial Analysis; Mexico; Marginalization Index; Public Health}
+}
+
+@inproceedings{Williams2025PlaceAgents,,
+  bibtex_show = {true},
+  abbr        = {SDSS},
+  author      = {Williams, James},
+  title       = {PlaceAgents: Multi-Stop Pedestrian Itineraries as Platial Flows on Urban Networks},
+  booktitle   = {The 6th Spatial Data Science Symposium (SDSS 2025)},
+  year        = {2025},
+  selected    = {true},
+  address     = {Online},
+  doi         = {10.5281/zenodo.17676286},
+  url         = {/assets/papers/Williams2025PlaceAgents.pdf},
+  abstract    = {This article presents PlaceAgents, a framework for modelling multi-stop pedestrian itineraries on city networks using open and reproducible data. The approach uses the itinerary as the base behavioural unit and links three core principles: (1) access to open data sources, (2) enabling explicit assumptions about agents, and (3) the auditability of outputs.},
+  keywords    = {Pedestrian Modelling; Agent-Based Modelling; Urban Networks; Platial Information; Spatial Data Science}
+}
+
+@inproceedings{Williams2025PlaceCrafter,,
+  bibtex_show = {true},
+  abbr        = {OSMScience},
+  author      = {Williams, James and Priestnall, Gary},
+  title       = {PlaceCrafter: Curating Urban Functional Regions through Platial Clustering of OpenStreetMap Points of Interest},
+  booktitle   = {Proceedings of OSMScience 2025},
+  year        = {2025},
+  selected    = {true},
+  address     = {Manila, Philippines},
+  url         = {/assets/papers/Williams2025PlaceCrafter.pdf},
+  abstract    = {The world is not just made of streets, buildings, and zones; it is shaped by how people engage and interact with places in their everyday lives. This manuscript presents a web-based geospatial tool that enables the mapping of these lived places and locales named PlaceCrafter. PlaceCrafter supports researchers in identifying platial regions: functional, human-centred areas that cross administrative and formal boundaries. The framework is built on OpenStreetMap, combining (near) real-time clustering, analysis, and statistical validation of these platial regions. PlaceCrafter is an initial demonstration for exploring the subjective experiences of place through existing datasets and city structures. },
+  keywords    = {Platial Information; OpenStreetMap; Geographic Information Systems; Clustering; Urban Planning; Place-based Computing}
+}
+
+
+@inproceedings{Kanjo2021,
+  bibtex_show  = {true},
+  abbr         = {ISC2},
+  author       = {Kanjo, Eiman and Anderez, Dario Ortega and Anwar, Amna and Al Shami, Ahmad and Williams, James},
+  booktitle    = {2021 IEEE International Smart Cities Conference (ISC2)},
+  title        = {CrowdTracing: Overcrowding Clustering and Detection System for Social Distancing},
+  year         = {2021},
+  volume       = {},
+  number       = {},
+  pages        = {1-7},
+  keywords     = {COVID-19; Ubiquitous Computing; Wireless Probe Requests; Mobile Sensing; Clustering; People Count; DBSCAN; SOM},
+  doi          = {10.1109/ISC253183.2021.9562914},
+  howpublished = {https://www.researchgate.net/publication/353274327_CrowdTracing_Overcrowding_Clustering_andDetection_System_for_Social_Distancing}
+}
+
+@inproceedings{Williams2024,
+  bibtex_show = {true},
+  abbr        = {W2GIS},
+  author      = {Williams, James},
+  editor      = {Lotfian, Maryam and Starace, Luigi Libero Lucio},
+  title       = {Towards a Framework for Personalising Leisure Walking Route Recommendations},
+  booktitle   = {Web and Wireless Geographical Information Systems},
+  year        = {2024},
+  publisher   = {Springer Nature Switzerland},
+  address     = {Cham},
+  pages       = {211--217},
+  abstract    = {This research investigates how a greater understanding of leisure walking can be used to support the personalisation and curation of new leisure walking experiences. Existing solutions are often limited in the range of routing properties a user has access to. The purpose of this research is to explore a richer understanding of how, what, why, and where leisure walkers engage with walks. Through a grounded theory approach combining a walking behaviour survey, a think-aloud study, and an expert interview study, a framework for personalising leisure walking route recommendations has been designed. The remaining work includes finalising the development of a web-based GIS demonstrator system for curating personalised routes and conducting an evaluation of this approach.},
+  isbn        = {978-3-031-60796-7},
+  doi         = {10.1007/978-3-031-60796-7_16},
+  keywords    = {Leisure Walking; Route Recommendation; Mobile Geospatial Computing; Place-Based Information}
+}
+
+@phdthesis{Williams2025Thesis,
+  bibtex_show = {true},
+  abbr        = {PhD},
+  title       = {A Framework for Curating Personalised Leisure Walking Experiences},
+  year        = {2025},
+  school      = {University of Nottingham},
+  month       = {July},
+  keywords    = {Leisure Walking; Route Recommendation; Personalisation; Mobile Geospatial Computing; Geospatial Computer Science},
+  author      = {Williams, James},
+  url         = {https://eprints.nottingham.ac.uk/80735/},
+  abstract    = {How can a richer understanding of the leisure walking experience be used to support the curation of personalised route recommendations? Leisure walking is a personal and subjective experience that encompasses a range of multi-faceted expectations and narratives, this can include visiting points of interests, connecting with the environment, or engaging with the social fabric of places. The broad and disparate scope of these reasons and interests makes the process of recommending new and personalised leisure walking experiences difficult. Existing research exploring the recommendation of leisure walking experiences is often based on broad assumptions about walkers with little representation of subjective or contextual detail. Prior work in leisure walking fails to address the wide array of reasons for leisure walking and in turn representing these in personalised walking experiences. Based on the lack of personalisation of leisure walking experiences, this thesis investigates leisure walking from a user-centred perspective. Three grounded theory studies are conducted to understand leisure walking, capturing details on (1) leisure walking behaviours through a behaviour survey, (2) practitioner knowledge of the subject area through interviews with professionals, and (3) a rich understanding of the leisure walking experience through a think-aloud study.
+                 
+                 Grounded theory is used in this thesis to address the broad assumptions about walking, developing a theoretical understanding of leisure walking grounded in empirical studies. Using this grounded theory of leisure walking behaviours, professional perspectives, and walkers in-situ experiences, a framework is designed to support the curation of personalised leisure walking experiences. The framework represents the research related to three tasks of leisure walking: planning, doing, and reflecting. Using this understanding a demonstrator tool for curating personalised leisure walking experiences is designed based on forty-nine properties and considerations formed from the grounded theory. A think-aloud and in-depth interview study is conducted to evaluate the role of the tool in supporting the curation of personalised experiences based on the participants local knowledge of an area. The qualitative evaluation found that the system is able perform well in terms of matching local knowledge and supporting the curation of new experiences, often recommending routes that can either be explained by the participant or which match expectations. The thesis closes with a discussion on future opportunities for leisure walking technology, providing design considerations for supporting personalised leisure walking experiences.}
+}

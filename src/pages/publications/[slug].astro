@@ -1,0 +1,213 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHead from '../../components/PageHead.astro';
+import PublicationRow from '../../components/PublicationRow.astro';
+import { SITE } from '../../consts';
+import { publications, metaDescription, scholarMeta, type Publication } from '../../lib/publications';
+import { breadcrumbSchema, publicationSchema } from '../../lib/schema';
+
+export const getStaticPaths: GetStaticPaths = () =>
+  publications.map((pub) => ({ params: { slug: pub.slug }, props: { pub } }));
+
+const { pub } = Astro.props as { pub: Publication };
+const path = `/publications/${pub.slug}`;
+
+// Related work: same keywords first, then anything from the same venue.
+const related = publications
+  .filter((other) => other.slug !== pub.slug)
+  .map((other) => ({
+    pub: other,
+    score:
+      other.keywords.filter((k) => pub.keywords.some((mine) => mine.toLowerCase() === k.toLowerCase())).length * 2 +
+      (other.venue && other.venue === pub.venue ? 1 : 0),
+  }))
+  .filter((entry) => entry.score > 0)
+  .sort((a, b) => b.score - a.score || b.pub.year - a.pub.year)
+  .slice(0, 3)
+  .map((entry) => entry.pub);
+---
+
+<BaseLayout
+  title={pub.title}
+  description={metaDescription(pub)}
+  type="article"
+  keywords={pub.keywords}
+  publishedTime={pub.year ? `${pub.year}-01-01` : undefined}
+  metaTags={scholarMeta(pub)}
+  jsonLd={[
+    publicationSchema(pub),
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Publications', path: '/publications' },
+      { name: pub.title, path },
+    ]),
+  ]}
+>
+  <PageHead label={`${pub.kind}, ${pub.year}`} title={pub.title} document>
+    <p class="byline">
+      {pub.authors.map((author, i) => (
+        <>
+          {i > 0 && (i === pub.authors.length - 1 ? ' and ' : ', ')}
+          <span class={author.family === 'Williams' && author.given.startsWith('James') ? 'me' : undefined}>
+            {author.full}
+          </span>
+        </>
+      ))}
+    </p>
+
+    {pub.venue && (
+      <p class="venue-line">
+        <em>{pub.venue}</em>
+        {pub.publisher && <>, {pub.publisher}</>}
+        {pub.pages && <>, pages {pub.pages}</>}
+      </p>
+    )}
+
+    <div class="inline-links" style="margin-top:2rem">
+      {pub.pdf && <a class="chip is-solid" href={pub.pdf} download>Download PDF</a>}
+      {pub.doiUrl && <a class="chip" href={pub.doiUrl} rel="noopener">View at publisher</a>}
+      {pub.externalUrl && !pub.doiUrl && <a class="chip" href={pub.externalUrl} rel="noopener">View online</a>}
+      {pub.abstract && <a class="chip" href="#abstract">Abstract</a>}
+      <a class="chip" href="#cite">Cite</a>
+    </div>
+  </PageHead>
+
+  <!-- Abstract and the record sit side by side: prose left, metadata right. -->
+  <section class="section" id="abstract">
+    <div class="wrap">
+      <div class="doc-grid">
+        <div class="doc-main">
+          {pub.abstract ? (
+            <>
+              <h2 class="doc-heading">Abstract</h2>
+              <div class="prose"><p>{pub.abstract}</p></div>
+            </>
+          ) : (
+            <>
+              <h2 class="doc-heading">Summary</h2>
+              <p class="note">No abstract is recorded for this item.</p>
+            </>
+          )}
+
+          {pub.keywords.length > 0 && (
+            <div class="tags" style="margin-top:1.75rem">
+              {pub.keywords.map((keyword) => <span class="tag">{keyword}</span>)}
+            </div>
+          )}
+        </div>
+
+        <aside class="doc-aside" aria-label="Record">
+          <p class="label">Record</p>
+          <dl class="record">
+            <div><dt>Type</dt><dd>{pub.kind}</dd></div>
+            <div><dt>Date</dt><dd>{pub.month ? `${pub.month} ${pub.year}` : pub.year}</dd></div>
+            {pub.venue && (
+              <div>
+                <dt>{pub.kind === 'Journal article' ? 'Journal' : pub.kind === 'Thesis' ? 'Institution' : 'Venue'}</dt>
+                <dd>{pub.venue}</dd>
+              </div>
+            )}
+            {pub.publisher && <div><dt>Publisher</dt><dd>{pub.publisher}</dd></div>}
+            {pub.address && <div><dt>Location</dt><dd>{pub.address}</dd></div>}
+            {pub.volume && <div><dt>Volume</dt><dd>{pub.volume}</dd></div>}
+            {pub.pages && <div><dt>Pages</dt><dd>{pub.pages}</dd></div>}
+            {pub.doi && (
+              <div>
+                <dt>DOI</dt>
+                <dd><a href={pub.doiUrl} rel="noopener">{pub.doi}</a></dd>
+              </div>
+            )}
+            <div><dt>Cite key</dt><dd><code>{pub.key}</code></dd></div>
+          </dl>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  {pub.pdf && (
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Full text</h2>
+          <a class="arrow" href={pub.pdf} download>Download PDF</a>
+        </div>
+
+        <div class="pdf-frame">
+          <object data={`${pub.pdf}#view=FitH`} type="application/pdf" aria-label={`PDF of ${pub.title}`}>
+            <div class="pdf-fallback">
+              <p class="prose">
+                This browser will not display the PDF inline.
+                <a href={pub.pdf} download>Download it instead</a>.
+              </p>
+            </div>
+          </object>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section" id="cite">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Cite this</h2>
+      </div>
+
+      <div class="cite-grid">
+        <div class="cite-block">
+          <div class="cite-head">
+            <span class="label">Reference</span>
+            <button class="copy" type="button" data-copy={pub.citation}>Copy</button>
+          </div>
+          <p class="cite-body">{pub.citation}</p>
+        </div>
+
+        <div class="cite-block">
+          <div class="cite-head">
+            <span class="label">BibTeX</span>
+            <button class="copy" type="button" data-copy={pub.bibtex}>Copy</button>
+          </div>
+          <pre class="cite-body"><code>{pub.bibtex}</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Related work</h2>
+          <a class="arrow" href="/publications">All publications</a>
+        </div>
+        <ul class="entries">
+          {related.map((other) => <PublicationRow pub={other} />)}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="wrap">
+      <a class="arrow" href="/publications">Back to all publications</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+    button.addEventListener('click', async () => {
+      const text = button.dataset.copy ?? '';
+      try {
+        await navigator.clipboard.writeText(text);
+        const original = button.textContent;
+        button.textContent = 'Copied';
+        window.setTimeout(() => {
+          button.textContent = original;
+        }, 1600);
+      } catch {
+        // Clipboard blocked. The text is selectable on the page regardless.
+      }
+    });
+  }
+</script>

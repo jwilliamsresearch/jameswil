@@ -1,0 +1,71 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHead from '../../components/PageHead.astro';
+import Row from '../../components/Row.astro';
+import { collectionPageSchema, breadcrumbSchema } from '../../lib/schema';
+
+const projects = (await getCollection('work', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title),
+);
+
+const description =
+  'Geospatial AI, humanitarian data infrastructure, urban planning intelligence, and the computational geography of human experience.';
+---
+
+<BaseLayout
+  title="Work"
+  description={description}
+  jsonLd={[
+    collectionPageSchema({
+      name: 'Work',
+      description,
+      path: '/work',
+      items: projects.map((p) => ({ name: p.data.title, path: `/work/${p.id}` })),
+    }),
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Work', path: '/work' },
+    ]),
+  ]}
+>
+  <PageHead
+    label="Work"
+    title="Work"
+    lead="Geospatial AI, humanitarian data infrastructure, urban planning intelligence, and the computational geography of human experience."
+  />
+
+  <section class="section">
+    <div class="wrap">
+      <p class="overview">
+        <strong>
+          Most of these started because a dataset would not do what somebody
+          needed it to do.
+        </strong>{' '}
+        A platform unifying 53 sources, so thirty researchers stop filing
+        requests for extracts. A conflation pipeline, because two points of
+        interest datasets disagree about where things are. A geoparser, because
+        nine gazetteers spell the same place nine ways. A routing engine,
+        because the shortest path and the best walk are not the same question.
+        They range from national scale infrastructure to open specifications
+        and published datasets, and several went from research prototype to
+        commercial deployment. The ones that lasted are the ones somebody else
+        could pick up and run.
+      </p>
+
+      <ul class="rows">
+        {projects.map((project) => (
+          <Row
+            title={project.data.title}
+            href={`/work/${project.id}`}
+            description={project.data.summary}
+            meta={project.data.period}
+            tags={project.data.tags}
+          />
+        ))}
+      </ul>
+
+      {projects.length === 0 && <p class="note">Nothing published here yet.</p>}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,112 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Row from '../components/Row.astro';
+import PublicationRow from '../components/PublicationRow.astro';
+import { SITE } from '../consts';
+import { publications, selectedPublications } from '../lib/publications';
+import { personSchema, websiteSchema } from '../lib/schema';
+
+const projects = (await getCollection('work', ({ data }) => !data.draft))
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 4);
+
+const recent = (selectedPublications.length >= 3 ? selectedPublications : publications).slice(0, 3);
+
+const capabilities = [
+  {
+    label: 'Pipelines',
+    title: 'ETL that survives its author',
+    body: 'Reproducible ingestion at volume, containerised and orchestrated, from raw source to GeoParquet, PMTiles and vector tiles.',
+  },
+  {
+    label: 'Conflation',
+    title: 'Entity resolution at scale',
+    body: 'Multi-stage matching across heterogeneous sources, with validation that catches the plausible-looking wrong answer.',
+  },
+  {
+    label: 'Spatial',
+    title: 'Geospatial systems',
+    body: 'PostGIS, spatial SQL, H3 discrete global grids and routing engines, where projections and joins decide correctness.',
+  },
+  {
+    label: 'GeoAI',
+    title: 'Representation learning',
+    body: 'Graph neural networks over street networks, NLP geoparsing, and embeddings that make places comparable.',
+  },
+];
+---
+
+<BaseLayout
+  title={`${SITE.name}, Research Scientist and GIS Consultant`}
+  bareTitle
+  description={SITE.description}
+  type="profile"
+  jsonLd={[personSchema(), websiteSchema()]}
+>
+  <Hero />
+
+  <section class="section" id="work">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Selected work</h2>
+        <a class="arrow" href="/work">All work</a>
+      </div>
+
+      <ul class="rows">
+        {projects.map((project) => (
+          <Row
+            title={project.data.title}
+            href={`/work/${project.id}`}
+            description={project.data.summary}
+            meta={project.data.period}
+            tags={project.data.tags}
+          />
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>What I do</h2>
+      </div>
+
+      <div class="cards">
+        {capabilities.map((item) => (
+          <div class="card">
+            <span class="label">{item.label}</span>
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Selected publications</h2>
+        <a class="arrow" href="/publications">All publications</a>
+      </div>
+
+      <ul class="entries">
+        {recent.map((pub) => <PublicationRow pub={pub} />)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap">
+      <p class="label" style="margin-bottom:1.25rem">Contact</p>
+      <a class="big" href={`mailto:${SITE.email}`}>Let's work<br /><span>together →</span></a>
+      <p class="prose" style="margin-top:2rem">
+        Open to consulting engagements and research collaborations. The fastest
+        route is email, at <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

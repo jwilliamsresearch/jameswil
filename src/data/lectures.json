@@ -1,0 +1,538 @@
+[
+  {
+    "code": "CMM721",
+    "slug": "cmm721",
+    "url": "/lectures/CMM721/",
+    "sessions": [
+      {
+        "n": 1,
+        "title": "Module Introduction & Web Architecture",
+        "url": "/lectures/CMM721/session1/"
+      },
+      {
+        "n": 2,
+        "title": "HTML5 & Semantic Structure",
+        "url": "/lectures/CMM721/session2/"
+      },
+      {
+        "n": 3,
+        "title": "CSS3 & Responsive Design",
+        "url": "/lectures/CMM721/session3/"
+      },
+      {
+        "n": 4,
+        "title": "JavaScript Fundamentals",
+        "url": "/lectures/CMM721/session4/"
+      },
+      {
+        "n": 5,
+        "title": "Asynchronous JavaScript & APIs",
+        "url": "/lectures/CMM721/session5/"
+      },
+      {
+        "n": 6,
+        "title": "Django Basics",
+        "url": "/lectures/CMM721/session6/"
+      },
+      {
+        "n": 7,
+        "title": "Django ORM & CRUD",
+        "url": "/lectures/CMM721/session7/"
+      },
+      {
+        "n": 8,
+        "title": "Django REST Framework",
+        "url": "/lectures/CMM721/session8/"
+      },
+      {
+        "n": 9,
+        "title": "React & State Management",
+        "url": "/lectures/CMM721/session9/"
+      },
+      {
+        "n": 10,
+        "title": "Web App Critique",
+        "url": "/lectures/CMM721/session10/"
+      },
+      {
+        "n": 11,
+        "title": "Comparative Critique",
+        "url": "/lectures/CMM721/session11/"
+      },
+      {
+        "n": 12,
+        "title": "Project Finalisation",
+        "url": "/lectures/CMM721/session12/"
+      }
+    ]
+  },
+  {
+    "code": "CMM7XX",
+    "slug": "cmm7xx",
+    "url": "/lectures/CMM7XX/",
+    "sessions": [
+      {
+        "n": 1,
+        "title": "Introduction to Information Security",
+        "url": "/lectures/CMM7XX/session1/"
+      },
+      {
+        "n": 2,
+        "title": "Introduction to Cryptography",
+        "url": "/lectures/CMM7XX/session2/"
+      },
+      {
+        "n": 3,
+        "title": "Symmetric Cryptography",
+        "url": "/lectures/CMM7XX/session3/"
+      },
+      {
+        "n": 4,
+        "title": "Asymmetric Cryptography",
+        "url": "/lectures/CMM7XX/session4/"
+      },
+      {
+        "n": 5,
+        "title": "Hash Functions & Signatures",
+        "url": "/lectures/CMM7XX/session5/"
+      },
+      {
+        "n": 6,
+        "title": "Authentication & Access Control",
+        "url": "/lectures/CMM7XX/session6/"
+      },
+      {
+        "n": 7,
+        "title": "Software Security",
+        "url": "/lectures/CMM7XX/session7/"
+      },
+      {
+        "n": 8,
+        "title": "Malware & Firewalls",
+        "url": "/lectures/CMM7XX/session8/"
+      },
+      {
+        "n": 9,
+        "title": "Intrusion Detection",
+        "url": "/lectures/CMM7XX/session9/"
+      },
+      {
+        "n": 10,
+        "title": "NIST CSF & Risk Assessment",
+        "url": "/lectures/CMM7XX/session10/"
+      },
+      {
+        "n": 11,
+        "title": "Security Policy",
+        "url": "/lectures/CMM7XX/session11/"
+      },
+      {
+        "n": 12,
+        "title": "Laws & Ethics",
+        "url": "/lectures/CMM7XX/session12/"
+      }
+    ]
+  },
+  {
+    "code": "CMU422",
+    "slug": "cmu422",
+    "url": "/lectures/CMU422/",
+    "sessions": [
+      {
+        "n": 1,
+        "title": "Introduction to HTML",
+        "url": "/lectures/CMU422/session1/"
+      },
+      {
+        "n": 2,
+        "title": "HTML Forms and Input",
+        "url": "/lectures/CMU422/session2/"
+      },
+      {
+        "n": 3,
+        "title": "CSS Fundamentals",
+        "url": "/lectures/CMU422/session3/"
+      },
+      {
+        "n": 4,
+        "title": "CSS Layout and Box Model",
+        "url": "/lectures/CMU422/session4/"
+      },
+      {
+        "n": 5,
+        "title": "CSS Flexbox and Grid",
+        "url": "/lectures/CMU422/session5/"
+      },
+      {
+        "n": 6,
+        "title": "JavaScript Basics",
+        "url": "/lectures/CMU422/session6/"
+      },
+      {
+        "n": 7,
+        "title": "JavaScript Events and Interactivity",
+        "url": "/lectures/CMU422/session7/"
+      },
+      {
+        "n": 8,
+        "title": "JavaScript Advanced Concepts",
+        "url": "/lectures/CMU422/session8/"
+      },
+      {
+        "n": 9,
+        "title": "Web APIs and External Libraries",
+        "url": "/lectures/CMU422/session9/"
+      },
+      {
+        "n": 10,
+        "title": "Project Planning and Development",
+        "url": "/lectures/CMU422/session10/"
+      },
+      {
+        "n": 11,
+        "title": "Advanced Topics and Future Trends",
+        "url": "/lectures/CMU422/session11/"
+      },
+      {
+        "n": 12,
+        "title": "Final Project and Assessment",
+        "url": "/lectures/CMU422/session12/"
+      }
+    ]
+  },
+  {
+    "code": "CMU529",
+    "slug": "cmu529",
+    "url": "/lectures/CMU529/",
+    "sessions": [
+      {
+        "n": 1,
+        "title": "Introduction to Full-stack Development",
+        "url": "/lectures/CMU529/session1/"
+      },
+      {
+        "n": 2,
+        "title": "Bootstrap Framework Fundamentals",
+        "url": "/lectures/CMU529/session2/"
+      },
+      {
+        "n": 3,
+        "title": "Bootstrap Components & Customization",
+        "url": "/lectures/CMU529/session3/"
+      },
+      {
+        "n": 4,
+        "title": "PHP Fundamentals & Server Setup",
+        "url": "/lectures/CMU529/session4/"
+      },
+      {
+        "n": 5,
+        "title": "PHP Forms & Data Processing",
+        "url": "/lectures/CMU529/session5/"
+      },
+      {
+        "n": 6,
+        "title": "PHP Forms & Database Integration",
+        "url": "/lectures/CMU529/session6/"
+      },
+      {
+        "n": 7,
+        "title": "PHP Database Connectivity",
+        "url": "/lectures/CMU529/session7/"
+      },
+      {
+        "n": 8,
+        "title": "Session Management & User Authentication",
+        "url": "/lectures/CMU529/session8/"
+      },
+      {
+        "n": 9,
+        "title": "E-commerce Core Features",
+        "url": "/lectures/CMU529/session9/"
+      },
+      {
+        "n": 10,
+        "title": "Advanced PHP Features & Security",
+        "url": "/lectures/CMU529/session10/"
+      },
+      {
+        "n": 11,
+        "title": "Modern JavaScript Libraries",
+        "url": "/lectures/CMU529/session11/"
+      },
+      {
+        "n": 12,
+        "title": "Final Project Development",
+        "url": "/lectures/CMU529/session12/"
+      }
+    ]
+  },
+  {
+    "code": "CMU540",
+    "slug": "cmu540",
+    "url": "/lectures/CMU540/",
+    "sessions": [
+      {
+        "n": 1,
+        "title": "Cyber Security Fundamentals & Lab Setup",
+        "url": "/lectures/CMU540/session1/"
+      },
+      {
+        "n": 2,
+        "title": "WEB-ACCESS-01 - Broken Access Control",
+        "url": "/lectures/CMU540/session2/"
+      },
+      {
+        "n": 3,
+        "title": "WEB-CRYPTO-01 - Cryptographic Failures",
+        "url": "/lectures/CMU540/session3/"
+      },
+      {
+        "n": 4,
+        "title": "WEB-SQL-01 - SQL Injection",
+        "url": "/lectures/CMU540/session4/"
+      },
+      {
+        "n": 5,
+        "title": "WEB-XSS-01 - Cross-Site Scripting",
+        "url": "/lectures/CMU540/session5/"
+      },
+      {
+        "n": 6,
+        "title": "WEB-CSRF-01 & WEB-CONFIG-01 - CSRF and Misconfiguration",
+        "url": "/lectures/CMU540/session6/"
+      },
+      {
+        "n": 7,
+        "title": "WEB-VULN-01 & WEB-AUTH-01 - Vulnerable Components & Authentication",
+        "url": "/lectures/CMU540/session7/"
+      },
+      {
+        "n": 8,
+        "title": "WEB-DATA-01 & WEB-LOG-01 - Data Exposure & Logging",
+        "url": "/lectures/CMU540/session8/"
+      },
+      {
+        "n": 9,
+        "title": "WEB-SSRF-01 & WEB-UPLOAD-01 - SSRF & File Upload Security",
+        "url": "/lectures/CMU540/session9/"
+      },
+      {
+        "n": 10,
+        "title": "HACKATHON",
+        "url": "/lectures/CMU540/session10/"
+      },
+      {
+        "n": 11,
+        "title": "NET-PROTO-01, NET-SCAN-01 & NET-DNS-01 - Network Security Fundamentals",
+        "url": "/lectures/CMU540/session11/"
+      },
+      {
+        "n": 12,
+        "title": "NET-TRAFFIC-01, NET-FIREWALL-01 & Final Assessment",
+        "url": "/lectures/CMU540/session12/"
+      }
+    ]
+  },
+  {
+    "code": "CMU597",
+    "slug": "cmu597",
+    "url": "/lectures/CMU597/",
+    "sessions": [
+      {
+        "n": 1,
+        "title": "Session 1",
+        "url": "/lectures/CMU597/session1/"
+      },
+      {
+        "n": 2,
+        "title": "Session 2",
+        "url": "/lectures/CMU597/session2/"
+      },
+      {
+        "n": 3,
+        "title": "Session 3",
+        "url": "/lectures/CMU597/session3/"
+      },
+      {
+        "n": 4,
+        "title": "Session 4",
+        "url": "/lectures/CMU597/session4/"
+      },
+      {
+        "n": 5,
+        "title": "Session 5",
+        "url": "/lectures/CMU597/session5/"
+      },
+      {
+        "n": 6,
+        "title": "Session 6",
+        "url": "/lectures/CMU597/session6/"
+      },
+      {
+        "n": 7,
+        "title": "Session 7",
+        "url": "/lectures/CMU597/session7/"
+      },
+      {
+        "n": 8,
+        "title": "Session 8",
+        "url": "/lectures/CMU597/session8/"
+      },
+      {
+        "n": 9,
+        "title": "Session 9",
+        "url": "/lectures/CMU597/session9/"
+      },
+      {
+        "n": 10,
+        "title": "Session 10",
+        "url": "/lectures/CMU597/session10/"
+      },
+      {
+        "n": 11,
+        "title": "Session 11",
+        "url": "/lectures/CMU597/session11/"
+      },
+      {
+        "n": 12,
+        "title": "Session 12",
+        "url": "/lectures/CMU597/session12/"
+      }
+    ]
+  },
+  {
+    "code": "CMU5XX-INFOSEC",
+    "slug": "cmu5xx-infosec",
+    "url": "/lectures/CMU5XX-INFOSEC/",
+    "sessions": [
+      {
+        "n": 1,
+        "title": "Secure IS & Architecture",
+        "url": "/lectures/CMU5XX-INFOSEC/session1/"
+      },
+      {
+        "n": 2,
+        "title": "Cyber-Physical & ICS",
+        "url": "/lectures/CMU5XX-INFOSEC/session2/"
+      },
+      {
+        "n": 3,
+        "title": "Policies & Procedures",
+        "url": "/lectures/CMU5XX-INFOSEC/session3/"
+      },
+      {
+        "n": 4,
+        "title": "Planning & Admin",
+        "url": "/lectures/CMU5XX-INFOSEC/session4/"
+      },
+      {
+        "n": 5,
+        "title": "Asset & Risk Mgmt",
+        "url": "/lectures/CMU5XX-INFOSEC/session5/"
+      },
+      {
+        "n": 6,
+        "title": "Human Security",
+        "url": "/lectures/CMU5XX-INFOSEC/session6/"
+      },
+      {
+        "n": 7,
+        "title": "Management Concepts",
+        "url": "/lectures/CMU5XX-INFOSEC/session7/"
+      },
+      {
+        "n": 8,
+        "title": "NIST Framework",
+        "url": "/lectures/CMU5XX-INFOSEC/session8/"
+      },
+      {
+        "n": 9,
+        "title": "Governance & Roles",
+        "url": "/lectures/CMU5XX-INFOSEC/session9/"
+      },
+      {
+        "n": 10,
+        "title": "Security Plans",
+        "url": "/lectures/CMU5XX-INFOSEC/session10/"
+      },
+      {
+        "n": 11,
+        "title": "IR & Business Continuity",
+        "url": "/lectures/CMU5XX-INFOSEC/session11/"
+      },
+      {
+        "n": 12,
+        "title": "Compliance & Audit",
+        "url": "/lectures/CMU5XX-INFOSEC/session12/"
+      }
+    ]
+  },
+  {
+    "code": "CMU6XX",
+    "slug": "cmu6xx",
+    "url": "/lectures/CMU6XX/",
+    "sessions": [
+      {
+        "n": 1,
+        "title": "Intro to InfoSec & Governance",
+        "url": "/lectures/CMU6XX/session1/"
+      },
+      {
+        "n": 2,
+        "title": "Reconnaissance & Footprinting",
+        "url": "/lectures/CMU6XX/session2/"
+      },
+      {
+        "n": 3,
+        "title": "Scanning & Enumeration",
+        "url": "/lectures/CMU6XX/session3/"
+      },
+      {
+        "n": 4,
+        "title": "Vulnerability Analysis",
+        "url": "/lectures/CMU6XX/session4/"
+      },
+      {
+        "n": 5,
+        "title": "System Hacking",
+        "url": "/lectures/CMU6XX/session5/"
+      },
+      {
+        "n": 6,
+        "title": "Sniffing & MITM",
+        "url": "/lectures/CMU6XX/session6/"
+      },
+      {
+        "n": 7,
+        "title": "Social Engineering",
+        "url": "/lectures/CMU6XX/session7/"
+      },
+      {
+        "n": 8,
+        "title": "Web App Hacking",
+        "url": "/lectures/CMU6XX/session8/"
+      },
+      {
+        "n": 9,
+        "title": "Wireless & Mobile",
+        "url": "/lectures/CMU6XX/session9/"
+      },
+      {
+        "n": 10,
+        "title": "Cloud & IoT Security",
+        "url": "/lectures/CMU6XX/session10/"
+      },
+      {
+        "n": 11,
+        "title": "Cryptography",
+        "url": "/lectures/CMU6XX/session11/"
+      },
+      {
+        "n": 12,
+        "title": "Reporting & Ethics",
+        "url": "/lectures/CMU6XX/session12/"
+      }
+    ]
+  }
+]

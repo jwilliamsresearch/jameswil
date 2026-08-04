@@ -1,0 +1,31 @@
+---
+export interface Props {
+  title: string;
+  href?: string;
+  description?: string;
+  /** Left gutter text, such as a period or module code. */
+  label?: string;
+  meta?: string;
+  tags?: string[];
+}
+
+const { title, href, description, label, meta, tags = [] } = Astro.props;
+---
+
+<li class="row">
+  <div class="row-inner">
+    {label && <div class="row-num">{label}</div>}
+    <h3 class="row-title">
+      {href ? <a class="row-link" href={href}>{title}</a> : title}
+    </h3>
+    <div class="row-body">
+      {description && <p class="row-desc">{description}</p>}
+      {tags.length > 0 && (
+        <div class="tags">
+          {tags.map((tag) => <span class="tag">{tag}</span>)}
+        </div>
+      )}
+    </div>
+    {meta && <div class="row-end">{meta}</div>}
+  </div>
+</li>

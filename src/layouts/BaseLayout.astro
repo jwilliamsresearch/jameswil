@@ -1,0 +1,72 @@
+---
+import { getImage } from 'astro:assets';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Seo from '../components/Seo.astro';
+import type { Props as SeoProps } from '../components/Seo.astro';
+import { OG_SOURCE } from '../consts';
+import '../styles/global.css';
+
+export type Props = SeoProps;
+
+// Social card, sized and encoded by the built-in image pipeline rather than
+// checked into public/ as a hand-made file.
+const ogSources = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/hero/*.{jpeg,jpg,png}',
+  { eager: true },
+);
+const ogEntry =
+  Object.entries(ogSources).find(([path]) => path.endsWith(OG_SOURCE)) ??
+  Object.entries(ogSources)[0];
+
+const ogImage = ogEntry
+  ? await getImage({
+      src: ogEntry[1].default,
+      width: 1200,
+      height: 630,
+      fit: 'cover',
+      format: 'jpeg',
+      quality: 78,
+      layout: 'none',
+    })
+  : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title="James Williams" href="/rss.xml" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <Seo {...Astro.props} image={Astro.props.image ?? ogImage?.src} />
+
+    <!-- Set before first paint so the theme never flashes. -->
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t) document.documentElement.dataset.theme = t;
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      import '../scripts/chrome';
+    </script>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+---
+import { SITE } from '../consts';
+
+const year = new Date().getFullYear();
+const links = SITE.profiles.filter((p) => p.label !== 'CV');
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© {year} {SITE.displayName}, {SITE.location.country}</p>
+    <div class="footer-links">
+      {links.map((link) => (
+        <a href={link.href} rel={link.sameAs ? 'me noopener' : undefined}>
+          {link.label}
+        </a>
+      ))}
+      <a href="/rss.xml">RSS</a>
+    </div>
+  </div>
+</footer>

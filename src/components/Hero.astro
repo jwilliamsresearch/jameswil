@@ -1,0 +1,71 @@
+---
+import { getImage } from 'astro:assets';
+import { SITE } from '../consts';
+
+/**
+ * The name is split per letter by the client script; each glyph masks its own
+ * photograph and flickers between them.
+ *
+ * The images are run through astro:assets here, at build time, so the browser
+ * gets hashed, resized, modern-format files. Two widths are emitted because a
+ * glyph on a phone needs a fraction of the pixels a glyph on a desktop does.
+ * Drop a new file into src/assets/hero and it joins the rotation.
+ */
+const sources = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/hero/*.{jpeg,jpg,png,webp,avif}',
+  { eager: true },
+);
+
+const variants = await Promise.all(
+  Object.values(sources).map(async ({ default: src }) => {
+    // layout 'none' keeps this to exactly one file per size. These are CSS
+    // background images, so a srcset would never be read.
+    const [small, large] = await Promise.all([
+      getImage({ src, width: 480, height: 640, fit: 'cover', format: 'webp', quality: 68, layout: 'none' }),
+      getImage({ src, width: 900, height: 1200, fit: 'cover', format: 'webp', quality: 72, layout: 'none' }),
+    ]);
+    return { small: small.src, large: large.src };
+  }),
+);
+
+const { name = SITE.displayName, tagline = SITE.tagline, roles = SITE.roles } = Astro.props;
+const links = SITE.profiles;
+---
+
+<section class="hero">
+  <div class="wrap">
+    <div class="name-wrap">
+      <h1 class="name" data-name>{name}</h1>
+    </div>
+
+    <div class="hero-body">
+      <ul class="roles reveal" data-d="1">
+        {roles.map((role: string) => <li>{role}</li>)}
+      </ul>
+
+      <p class="lead reveal" data-d="2">{tagline}</p>
+
+      <div class="inline-links reveal" data-d="3">
+        {links.map((link) => (
+          <a class="chip" href={link.href} rel={link.sameAs ? 'me noopener' : undefined}>
+            {link.label}
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <a class="scroll-cue" href="#work" aria-label="Scroll to work">
+      <svg viewBox="0 0 21 33" aria-hidden="true">
+        <rect class="shell" x="0.75" y="0.75" width="19.5" height="31.5" rx="9.75" />
+        <rect class="wheel" x="9.25" y="7" width="2.5" height="6" rx="1.25" />
+      </svg>
+      <span class="tick" aria-hidden="true"></span>
+    </a>
+  </div>
+</section>
+
+<script type="application/json" id="hero-images" set:html={JSON.stringify(variants)} is:inline />
+
+<script>
+  import '../scripts/hero';
+</script>

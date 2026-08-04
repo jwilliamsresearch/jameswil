@@ -1,0 +1,167 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHead from '../../components/PageHead.astro';
+import { collectionPageSchema, breadcrumbSchema } from '../../lib/schema';
+import { sessionCount } from '../../lib/lectures';
+
+const courses = await getCollection('teaching', ({ data }) => !data.draft);
+
+/** "2025/26" sorts naturally as a string, so the first four digits are enough. */
+const startYear = (year: string) => Number.parseInt(year.slice(0, 4), 10);
+
+/**
+ * A module taught over several years shows a range rather than appearing once
+ * per year, which is what made the old year and semester headings repeat.
+ */
+function taughtOver(course: (typeof courses)[number]) {
+  const years = [course.data.year, ...course.data.history.map((h) => h.year)];
+  const starts = years.map(startYear).sort((a, b) => a - b);
+  const first = starts[0];
+  const last = starts.at(-1)!;
+  return {
+    label: first === last ? `${first}/${String(first + 1).slice(2)}` : `${first} to ${last + 1}`,
+    latest: last,
+  };
+}
+
+const decorate = (course: (typeof courses)[number]) => ({
+  course,
+  ...taughtOver(course),
+  sessions: sessionCount(course.data.code),
+});
+
+const byRecency = (a: { latest: number; course: any }, b: { latest: number; course: any }) =>
+  b.latest - a.latest || (a.course.data.code ?? '').localeCompare(b.course.data.code ?? '');
+
+const STAGES = ['1st year', '2nd year', '3rd year', 'Masters'] as const;
+
+/** Grouped by the year of study the module is taught to. */
+const delivered = STAGES.map((stage) => ({
+  stage,
+  items: courses
+    .filter((c) => c.data.status === 'Delivered' && c.data.stage === stage)
+    .map(decorate)
+    .sort(byRecency),
+})).filter((group) => group.items.length > 0);
+
+/** Range covering everything in a group. */
+function span(items: Array<{ course: any; latest: number }>) {
+  const starts = items.flatMap(({ course }) =>
+    [course.data.year, ...course.data.history.map((h: { year: string }) => h.year)].map(startYear),
+  );
+  const first = Math.min(...starts);
+  const last = Math.max(...starts);
+  return first === last ? `${first}/${String(first + 1).slice(2)}` : `${first} to ${last + 1}`;
+}
+
+/** Written and prepared, but never taught. Kept apart so the record is honest. */
+const prepared = courses
+  .filter((c) => c.data.status === 'Upcoming')
+  .map(decorate)
+  .sort((a, b) => (a.course.data.code ?? '').localeCompare(b.course.data.code ?? ''));
+
+const description =
+  'Modules taught by James Williams across web development, cyber security, programming and engineering, at undergraduate and postgraduate level, with slides for each session.';
+---
+
+<BaseLayout
+  title="Teaching"
+  description={description}
+  jsonLd={[
+    collectionPageSchema({
+      name: 'Teaching',
+      description,
+      path: '/teaching',
+      items: courses.map((c) => ({ name: c.data.title, path: `/teaching/${c.id}` })),
+    }),
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Teaching', path: '/teaching' },
+    ]),
+  ]}
+>
+  <PageHead
+    label="Teaching"
+    title="Teaching"
+    lead="Modules across web development, cyber security, programming and engineering. Slide decks for each session are linked from the module pages."
+  />
+
+  <section class="section">
+    <div class="wrap">
+      {delivered.map((group) => (
+        <div class="year-group">
+          <div class="year-head">
+            <h2 class="year-heading">{group.stage}</h2>
+            <span class="year-sub">{span(group.items)}</span>
+          </div>
+
+          <ul class="rows">
+            {group.items.map(({ course, label, sessions }) => (
+              <li class="row">
+                <div class="row-inner">
+                  <div class="row-num">{course.data.code}</div>
+                  <h3 class="row-title">
+                    <a class="row-link" href={`/teaching/${course.id}`}>{course.data.title}</a>
+                  </h3>
+                  <div class="row-body">
+                    <p class="row-desc">
+                      {[course.data.institution, course.data.cohort, course.data.credits]
+                        .filter(Boolean)
+                        .join(' · ')}
+                    </p>
+                    {sessions > 0 && (
+                      <div class="tags"><span class="tag">{sessions} sessions</span></div>
+                    )}
+                  </div>
+                  <div class="row-end">{label}</div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+
+      {courses.length === 0 && <p class="note">No modules published yet.</p>}
+    </div>
+  </section>
+
+  {prepared.length > 0 && (
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Prepared, not delivered</h2>
+        </div>
+
+        <p class="note" style="margin-bottom:2rem">
+          Modules I wrote and prepared for 2025/26 but left before they ran.
+          The materials are complete and the slides are published here.
+        </p>
+
+        <ul class="rows">
+          {prepared.map(({ course, label, sessions }) => (
+            <li class="row">
+              <div class="row-inner">
+                <div class="row-num">{course.data.code}</div>
+                <h3 class="row-title">
+                  <a class="row-link" href={`/teaching/${course.id}`}>{course.data.title}</a>
+                </h3>
+                <div class="row-body">
+                  <p class="row-desc">
+                    {[course.data.stage, course.data.institution, course.data.credits]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </p>
+                  {sessions > 0 && (
+                    <div class="tags"><span class="tag">{sessions} sessions</span></div>
+                  )}
+                </div>
+                <div class="row-end">{label}</div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+</BaseLayout>

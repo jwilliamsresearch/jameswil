@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHead from '../../components/PageHead.astro';
+import PublicationRow from '../../components/PublicationRow.astro';
+import { publications, publicationsByYear } from '../../lib/publications';
+import { collectionPageSchema, breadcrumbSchema } from '../../lib/schema';
+
+const groups = publicationsByYear();
+const kinds = [...new Set(publications.map((p) => p.kind))].sort();
+
+const description =
+  'Peer reviewed papers, conference proceedings, preprints, datasets and theses by James Williams, with abstracts, PDFs and citation data for each.';
+---
+
+<BaseLayout
+  title="Publications"
+  description={description}
+  jsonLd={[
+    collectionPageSchema({
+      name: 'Publications',
+      description,
+      path: '/publications',
+      items: publications.map((p) => ({ name: p.title, path: `/publications/${p.slug}` })),
+    }),
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Publications', path: '/publications' },
+    ]),
+  ]}
+>
+  <PageHead
+    label="Publications"
+    title="Publications"
+    lead="My work sits between GIScience, computer science and the social sciences, and the publication record follows it: conflict data infrastructure, urban representation learning, platial analysis and the systems underneath all three."
+  />
+
+  <section class="section">
+    <div class="wrap">
+      <p class="overview">
+        <strong>
+          The through line is platial: a place is not the same thing as a
+          coordinate, and the difference is computable.
+        </strong>{' '}
+        The early work asked what makes a walk worth taking, and answered with
+        linked video narratives and contextual GIS rather than distance and
+        gradient. The later work asks the same question at scale, clustering
+        points of interest into functional urban regions, publishing conflated
+        POI datasets across six countries, building walkability surfaces on H3,
+        and proposing formats that let a language model reason about somewhere
+        rather than something. Running alongside is applied collaboration in
+        health geography, where the spatial question becomes who is exposed and
+        who gets missed. The methods change and the scale keeps growing. The
+        concern does not.
+      </p>
+
+      <div class="filters" role="group" aria-label="Filter by type">
+        <button type="button" data-filter="all" aria-pressed="true">All</button>
+        {kinds.map((kind) => (
+          <button type="button" data-filter={kind} aria-pressed="false">{kind}</button>
+        ))}
+      </div>
+
+      {groups.map((group) => (
+        <div class="year-group" data-year-group>
+          <div class="year-head">
+            <h2 class="year-heading">{group.year}</h2>
+          </div>
+          <ul class="entries">
+            {group.items.map((pub) => <PublicationRow pub={pub} showYear={false} />)}
+          </ul>
+        </div>
+      ))}
+
+      <p class="note" data-empty hidden>Nothing of that type yet.</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const items = document.querySelectorAll<HTMLElement>('[data-kind]');
+  const groups = document.querySelectorAll<HTMLElement>('[data-year-group]');
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+
+  for (const button of buttons) {
+    button.addEventListener('click', () => {
+      const wanted = button.dataset.filter;
+
+      for (const other of buttons) {
+        other.setAttribute('aria-pressed', String(other === button));
+      }
+
+      let visible = 0;
+      for (const item of items) {
+        const match = wanted === 'all' || item.dataset.kind === wanted;
+        item.hidden = !match;
+        if (match) visible += 1;
+      }
+
+      // Hide a year heading once everything under it is filtered out.
+      for (const group of groups) {
+        group.hidden = group.querySelectorAll('[data-kind]:not([hidden])').length === 0;
+      }
+      if (empty) empty.hidden = visible > 0;
+    });
+  }
+</script>

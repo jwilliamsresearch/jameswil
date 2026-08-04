@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="JW">
+  <style>
+    .plate { fill: #0a0a0a; }
+    .mark  { fill: #ffffff; }
+    @media (prefers-color-scheme: dark) {
+      .plate { fill: #f2f2f2; }
+      .mark  { fill: #0a0a0a; }
+    }
+  </style>
+  <rect class="plate" width="64" height="64" rx="9" />
+  <!-- Monogram drawn as paths so it never depends on a font being present. -->
+  <g class="mark">
+    <!-- J -->
+    <path d="M12 14h6v22.6c0 5.2-3.2 8.4-8.4 8.4H8v-5.4h1.2c2.1 0 2.8-1.1 2.8-3.4V14Z" />
+    <!-- W -->
+    <path d="M24.6 14h6.1l3.6 20.1L38.7 14h5.2l4.4 20.1L51.9 14H58l-6.2 31h-6.1l-4.4-19.6L36.9 45h-6.1L24.6 14Z" />
+  </g>
+</svg>

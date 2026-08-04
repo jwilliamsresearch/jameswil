@@ -1,0 +1,42 @@
+---
+import type { Publication } from '../lib/publications';
+import { SITE } from '../consts';
+
+export interface Props {
+  pub: Publication;
+  showYear?: boolean;
+}
+
+const { pub, showYear = true } = Astro.props;
+const href = `/publications/${pub.slug}`;
+---
+
+<li class="entry" data-kind={pub.kind}>
+  <div class="entry-meta">{showYear ? pub.year : (pub.venueShort ?? pub.kind)}</div>
+
+  <div class="entry-body">
+    <h3 class="entry-title"><a href={href}>{pub.title}</a></h3>
+
+    <p class="entry-sub">
+      {pub.authors.map((author, i) => (
+        <>
+          {i > 0 && (i === pub.authors.length - 1 ? ' & ' : ', ')}
+          <span class={author.family === 'Williams' && author.given.startsWith('James') ? 'me' : undefined}>
+            {author.short}
+          </span>
+        </>
+      ))}
+      {pub.venue && <>. <em>{pub.venue}</em></>}
+      {pub.pages && <>, {pub.pages}</>}.
+    </p>
+
+    <div class="res">
+      <a href={href}>Details</a>
+      {pub.pdf && <a href={pub.pdf} data-pdf>PDF</a>}
+      {pub.doiUrl && <a href={pub.doiUrl} rel="noopener">DOI</a>}
+      {pub.externalUrl && !pub.doiUrl && <a href={pub.externalUrl} rel="noopener">Link</a>}
+    </div>
+  </div>
+
+  <div class="entry-end">{pub.kind}</div>
+</li>

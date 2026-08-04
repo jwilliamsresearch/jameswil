@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHead from '../components/PageHead.astro';
+import { NAV } from '../consts';
+---
+
+<BaseLayout title="Page not found" description="That page does not exist." noindex>
+  <PageHead
+    label="404"
+    title="That page does not exist"
+    lead="The link may be out of date, or the page may have moved. Everything on the site is reachable from here."
+  />
+
+  <section class="section">
+    <div class="wrap">
+      <div class="cards">
+        {NAV.filter((item) => item.href !== '/').map((item) => (
+          <a class="card" href={item.href}>
+            <span class="label">Go to</span>
+            <h3>{item.label}</h3>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,125 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHead from '../../components/PageHead.astro';
+import { breadcrumbSchema, creativeWorkSchema } from '../../lib/schema';
+import { lecturesFor } from '../../lib/lectures';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const courses = await getCollection('teaching', ({ data }) => !data.draft);
+  return courses.map((course) => ({
+    params: { slug: course.id },
+    props: { course },
+  }));
+};
+
+const { course } = Astro.props;
+const { Content } = await render(course);
+const d = course.data;
+const path = `/teaching/${course.id}`;
+
+// Decks are served from a separate deployment at /lectures.
+const lectures = lecturesFor(d.code);
+---
+
+<BaseLayout
+  title={d.code ? `${d.code}: ${d.title}` : d.title}
+  description={d.summary}
+  type="article"
+  keywords={d.tags}
+  modifiedTime={d.updated?.toISOString()}
+  jsonLd={[
+    creativeWorkSchema({
+      type: 'Course',
+      name: d.code ? `${d.code}: ${d.title}` : d.title,
+      description: d.summary,
+      path,
+      dateModified: d.updated,
+      keywords: d.tags,
+    }),
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Teaching', path: '/teaching' },
+      { name: d.title, path },
+    ]),
+  ]}
+>
+  <PageHead label={d.code ?? 'Module'} title={d.title} lead={d.summary} document>
+    <dl class="facts" style="margin-top:2.5rem">
+      <dt>When</dt>
+      <dd>
+        {d.year}, {d.semester}
+        {d.status === 'Upcoming' && (
+          <><br /><span class="muted">Written and prepared, not delivered</span></>
+        )}
+      </dd>
+      {d.institution && (<><dt>Institution</dt><dd>{d.institution}</dd></>)}
+      {d.level && (<><dt>Level</dt><dd>{d.level}</dd></>)}
+      {d.credits && (<><dt>Credits</dt><dd>{d.credits}</dd></>)}
+      {d.cohort && (<><dt>Cohort</dt><dd>{d.cohort}</dd></>)}
+      {d.history.length > 0 && (
+        <>
+          <dt>Also taught</dt>
+          <dd>{d.history.map((h) => `${h.year}, ${h.semester}`).join(' · ')}</dd>
+        </>
+      )}
+      {d.links.length > 0 && (
+        <>
+          <dt>Links</dt>
+          <dd>
+            {d.links.map((link, i) => (
+              <>
+                {i > 0 && ' · '}
+                <a href={link.href} rel="noopener">{link.label}</a>
+              </>
+            ))}
+          </dd>
+        </>
+      )}
+    </dl>
+  </PageHead>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="doc-grid">
+        <article class="doc-main prose">
+          <Content />
+        </article>
+
+        <aside class="doc-aside" aria-label="Sessions">
+          {lectures ? (
+            <>
+              <p class="label">Sessions</p>
+              <ol class="session-list">
+                {lectures.sessions.map((session) => (
+                  <li>
+                    <a href={session.url}>
+                      <span class="session-n">{String(session.n).padStart(2, '0')}</span>
+                      <span class="session-title">{session.title}</span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+              <p class="session-note">
+                Slides open in the browser. Arrow keys move through a deck,
+                shift with the arrows changes deck.
+              </p>
+            </>
+          ) : (
+            <>
+              <p class="label">Sessions</p>
+              <p class="session-note">Slides for this module are not published.</p>
+            </>
+          )}
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <a class="arrow" href="/teaching">Back to all teaching</a>
+    </div>
+  </section>
+</BaseLayout>

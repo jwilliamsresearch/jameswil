@@ -1,0 +1,22 @@
+---
+export interface Props {
+  label?: string;
+  title: string;
+  lead?: string;
+  meta?: string;
+  /** Set for papers, projects and other documents whose title is real prose. */
+  document?: boolean;
+}
+
+const { label, title, lead, meta, document = false } = Astro.props;
+---
+
+<section class:list={['page-head', document && 'is-document']}>
+  <div class="wrap">
+    {label && <span class="label">{label}</span>}
+    <h1>{title}</h1>
+    {lead && <p class="lead">{lead}</p>}
+    {meta && <p class="label" style="margin-top:1.25rem">{meta}</p>}
+    <slot />
+  </div>
+</section>
