@@ -10,9 +10,10 @@ order: 5
 updated: 2026-08-04
 
 logo: ../../assets/work/parm-x/logo.png
-cover: ../../assets/work/parm-x/homepage.png
-coverAlt: The PARM-X landing page, a Three.js particle scene introducing the Controls, Presentation and Map interfaces.
-coverCaption: The landing page. A Three.js particle scene introducing the three core interfaces that run as independent, synchronised browser windows.
+cover: ../../assets/work/parm-x/physical-model.png
+coverAlt: "The physical projection augmented relief model of Nottingham: a white 3D printed terrain surface roughly two metres across, with an Ordnance Survey style map projected onto it so roads, greenspace and the River Trent land on the modelled buildings. An operator console sits at the near edge and a wall screen behind shows the PARM welcome slide."
+coverCaption: "The model in the City as Lab space. The surface is bare white terrain, so everything visible on it is projected: basemap, council data, agents and annotations all land on real buildings rather than a flat plane. The console at the near edge is the Controls window and the screen behind is the Presentation window, both driven by the same store."
+
 
 links:
   - label: Project page
@@ -72,6 +73,10 @@ figures:
     alt: "The PARM-X Presentation screen showing the active layer list with source types alongside Nottingham imagery."
     caption: "The public-facing screen. Active layers are listed with source type and styling summary, and where a research project is running a QR code appears here, which is the entire onboarding path for a participant."
     label: Fig. 5
+  - src: ../../assets/work/parm-x/homepage.png
+    alt: "The PARM-X landing page, a Three.js particle scene introducing the Controls, Presentation and Map interfaces."
+    caption: "The landing page. A Three.js particle scene introducing the three core interfaces, which run as independent, synchronised browser windows."
+    label: Fig. 6
 
 outcomes:
   - title: Live control of what the model shows
