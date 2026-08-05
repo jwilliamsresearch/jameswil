@@ -1,9 +1,7 @@
 /**
  * Lecture decks live in a separate repository, served from its own host at
- * lectures.jameswil.com. The manifest stores paths as /lectures/CODE/sessionN/,
- * which is where they sat when the decks were a subdirectory, so this module
- * rewrites them onto the deck host. Teaching pages link through `deckUrl` and
- * the two builds stay uncoupled.
+ * lectures.jameswil.com. The manifest stores host-relative paths, so teaching
+ * pages link through `deckUrl` and the two builds stay uncoupled.
  *
  * Moving the decks again means changing LECTURES_ORIGIN and nothing else.
  *
@@ -16,18 +14,13 @@ import manifest from '../data/lectures.json';
 export const LECTURES_ORIGIN = 'https://lectures.jameswil.com';
 
 /**
- * Manifest path to a real URL. The manifest records sessions as
- * /lectures/CODE/sessionN/, which is neither where nor how the decks are
- * served: they sit at the root of their own host, one HTML file per session
- * under a slideshows directory. Verified against the live deployment.
+ * Manifest paths are already relative to the deck host, so this only adds the
+ * origin. Regenerate the manifest with scripts/sync-lectures.mjs, which reads
+ * the deployment rather than a local folder, so a link can only exist here if
+ * it resolves there.
  */
 export function deckUrl(path: string): string {
-  const session = path.match(/^\/lectures\/([^/]+)\/session(\d+)\/?$/);
-  if (session) {
-    const [, code, n] = session;
-    return `${LECTURES_ORIGIN}/${code}/slideshows/session${n}.html`;
-  }
-  return `${LECTURES_ORIGIN}${path.replace(/^\/lectures/, '')}`;
+  return `${LECTURES_ORIGIN}${path}`;
 }
 
 export interface LectureSession {
