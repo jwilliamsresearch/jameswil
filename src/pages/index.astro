@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../lib/paths';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
@@ -51,14 +52,14 @@ const capabilities = [
     <div class="wrap">
       <div class="section-head">
         <h2>Selected work</h2>
-        <a class="arrow" href="/work">All work</a>
+        <a class="arrow" href={withBase('/work')}>All work</a>
       </div>
 
       <ul class="rows">
         {projects.map((project) => (
           <Row
             title={project.data.title}
-            href={`/work/${project.id}`}
+            href={withBase(`/work/${project.id}`)}
             description={project.data.summary}
             meta={project.data.period}
             tags={project.data.tags}
@@ -92,7 +93,7 @@ const capabilities = [
     <div class="wrap">
       <div class="section-head">
         <h2>Selected publications</h2>
-        <a class="arrow" href="/publications">All publications</a>
+        <a class="arrow" href={withBase('/publications')}>All publications</a>
       </div>
 
       <ul class="entries">

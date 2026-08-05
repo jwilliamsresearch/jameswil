@@ -3,8 +3,14 @@
  * Change it here, it changes everywhere.
  */
 
+/** Origin only, no path. Comes from `site` in astro.config. */
+export const ORIGIN = (import.meta.env.SITE ?? 'https://jameswil.com').replace(/\/+$/, '');
+
+/** Where the site is actually served from, base path included. */
+const SITE_URL = `${ORIGIN}${(import.meta.env.BASE_URL ?? '/').replace(/\/+$/, '')}`;
+
 export const SITE = {
-  url: 'https://jameswil.com',
+  url: SITE_URL,
   /** Legal name. Used for SEO, schema and citations, never shortened. */
   name: 'James Williams',
   /** How the name is set in the masthead and hero. */

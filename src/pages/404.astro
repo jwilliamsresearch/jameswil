@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../lib/paths';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHead from '../components/PageHead.astro';
 import { NAV } from '../consts';
@@ -15,7 +16,7 @@ import { NAV } from '../consts';
     <div class="wrap">
       <div class="cards">
         {NAV.filter((item) => item.href !== '/').map((item) => (
-          <a class="card" href={item.href}>
+          <a class="card" href={withBase(item.href)}>
             <span class="label">Go to</span>
             <h3>{item.label}</h3>
           </a>

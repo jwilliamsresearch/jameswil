@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths';
 import type { GetStaticPaths } from 'astro';
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -71,7 +72,7 @@ const lectures = lecturesFor(d.code);
             {d.links.map((link, i) => (
               <>
                 {i > 0 && ' · '}
-                <a href={link.href} rel="noopener">{link.label}</a>
+                <a href={withBase(link.href)} rel="noopener">{link.label}</a>
               </>
             ))}
           </dd>
@@ -119,7 +120,7 @@ const lectures = lecturesFor(d.code);
 
   <section class="section">
     <div class="wrap">
-      <a class="arrow" href="/teaching">Back to all teaching</a>
+      <a class="arrow" href={withBase('/teaching')}>Back to all teaching</a>
     </div>
   </section>
 </BaseLayout>

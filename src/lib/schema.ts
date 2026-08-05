@@ -1,7 +1,9 @@
-import { SITE } from '../consts';
+import { ORIGIN, SITE } from '../consts';
+import { absoluteUrl } from './paths';
 import type { Publication } from './publications';
 
-const absolute = (path: string) => new URL(path, SITE.url).href;
+/* Not new URL(): a root-relative path would discard the base path with it. */
+const absolute = (path: string) => absoluteUrl(ORIGIN, path);
 
 export const personId = `${SITE.url}/#person`;
 export const siteId = `${SITE.url}/#website`;

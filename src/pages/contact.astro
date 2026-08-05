@@ -1,7 +1,8 @@
 ---
+import { withBase, absoluteUrl } from '../lib/paths';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHead from '../components/PageHead.astro';
-import { SITE } from '../consts';
+import { ORIGIN, SITE } from '../consts';
 import { personSchema, breadcrumbSchema } from '../lib/schema';
 
 const description = `Contact James Williams, geospatial data developer, ${SITE.location.region}, ${SITE.location.country}.`;
@@ -15,7 +16,7 @@ const description = `Contact James Williams, geospatial data developer, ${SITE.l
     {
       '@context': 'https://schema.org',
       '@type': 'ContactPage',
-      url: new URL('/contact', SITE.url).href,
+      url: absoluteUrl(ORIGIN, '/contact'),
       name: 'Contact',
       description,
       mainEntity: { '@id': `${SITE.url}/#person` },
@@ -72,7 +73,7 @@ const description = `Contact James Williams, geospatial data developer, ${SITE.l
           </p>
           <div class="inline-links">
             <a class="chip is-solid" href={`mailto:${SITE.email}`}>Send an email</a>
-            <a class="chip" href="/cv.pdf">Download CV</a>
+            <a class="chip" href={withBase('/cv.pdf')}>Download CV</a>
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../lib/paths';
 import { SITE } from '../consts';
 
 const year = new Date().getFullYear();
@@ -10,11 +11,11 @@ const links = SITE.profiles.filter((p) => p.label !== 'CV');
     <p>© {year} {SITE.displayName}, {SITE.location.country}</p>
     <div class="footer-links">
       {links.map((link) => (
-        <a href={link.href} rel={link.sameAs ? 'me noopener' : undefined}>
+        <a href={withBase(link.href)} rel={link.sameAs ? 'me noopener' : undefined}>
           {link.label}
         </a>
       ))}
-      <a href="/rss.xml">RSS</a>
+      <a href={withBase('/rss.xml')}>RSS</a>
     </div>
   </div>
 </footer>

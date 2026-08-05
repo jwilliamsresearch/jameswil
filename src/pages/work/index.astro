@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHead from '../../components/PageHead.astro';
@@ -57,7 +58,7 @@ const description =
         {projects.map((project) => (
           <Row
             title={project.data.title}
-            href={`/work/${project.id}`}
+            href={withBase(`/work/${project.id}`)}
             description={project.data.summary}
             meta={project.data.period}
             tags={project.data.tags}

@@ -1,5 +1,6 @@
 import { parseBibtex, parseAuthors, type Author } from './bibtex';
-import { SITE } from '../consts';
+import { ORIGIN, SITE } from '../consts';
+import { absoluteUrl } from './paths';
 
 /* Astro inlines the .bib at build time, so adding an entry to the file is the
    entire workflow for adding a publication to the site. */
@@ -246,7 +247,7 @@ export function scholarMeta(pub: Publication): Array<{ name: string; content: st
     if (last) tags.push({ name: 'citation_lastpage', content: last.trim() });
   }
   if (pub.doi) tags.push({ name: 'citation_doi', content: pub.doi });
-  if (pub.pdf) tags.push({ name: 'citation_pdf_url', content: new URL(pub.pdf, SITE.url).href });
+  if (pub.pdf) tags.push({ name: 'citation_pdf_url', content: absoluteUrl(ORIGIN, pub.pdf) });
 
   return tags;
 }

@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHead from '../../components/PageHead.astro';
@@ -102,7 +103,7 @@ const description =
                 <div class="row-inner">
                   <div class="row-num">{course.data.code}</div>
                   <h3 class="row-title">
-                    <a class="row-link" href={`/teaching/${course.id}`}>{course.data.title}</a>
+                    <a class="row-link" href={withBase(`/teaching/${course.id}`)}>{course.data.title}</a>
                   </h3>
                   <div class="row-body">
                     <p class="row-desc">
@@ -144,7 +145,7 @@ const description =
               <div class="row-inner">
                 <div class="row-num">{course.data.code}</div>
                 <h3 class="row-title">
-                  <a class="row-link" href={`/teaching/${course.id}`}>{course.data.title}</a>
+                  <a class="row-link" href={withBase(`/teaching/${course.id}`)}>{course.data.title}</a>
                 </h3>
                 <div class="row-body">
                   <p class="row-desc">

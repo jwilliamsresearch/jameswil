@@ -1,5 +1,5 @@
 ---
-import { SITE } from '../consts';
+import { ORIGIN, SITE } from '../consts';
 
 export interface Props {
   title: string;
@@ -34,9 +34,11 @@ const {
   jsonLd = [],
 } = Astro.props;
 
-const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', SITE.url).href;
+/* Astro.url.pathname already carries the base, so canonicals build on the
+   origin alone. Adding SITE.url here would double the subpath. */
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', ORIGIN).href;
 const fullTitle = bareTitle ? title : `${title} | ${SITE.name}`;
-const imageUrl = new URL(image, SITE.url).href;
+const imageUrl = new URL(image, ORIGIN).href;
 ---
 
 <title>{fullTitle}</title>

@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths';
 import type { GetStaticPaths } from 'astro';
 import { getCollection, render } from 'astro:content';
 import { Image, getImage } from 'astro:assets';
@@ -120,10 +121,10 @@ const isWide = (fig: (typeof d.figures)[number], i: number) => fig.wide || (oddC
     {d.links.length > 0 && (
       <div class="inline-links" style="margin-top:2rem">
         {primaryLink && (
-          <a class="chip is-solid" href={primaryLink.href} rel="noopener">{primaryLink.label}</a>
+          <a class="chip is-solid" href={withBase(primaryLink.href)} rel="noopener">{primaryLink.label}</a>
         )}
         {otherLinks.map((link) => (
-          <a class="chip" href={link.href} rel="noopener">{link.label}</a>
+          <a class="chip" href={withBase(link.href)} rel="noopener">{link.label}</a>
         ))}
       </div>
     )}
@@ -220,8 +221,8 @@ const isWide = (fig: (typeof d.figures)[number], i: number) => fig.wide || (oddC
                   height={fig.src.height}
                   aria-label={fig.alt}
                 >
-                  {fig.video.webm && <source src={fig.video.webm} type="video/webm" />}
-                  <source src={fig.video.mp4} type="video/mp4" />
+                  {fig.video.webm && <source src={withBase(fig.video.webm)} type="video/webm" />}
+                  <source src={withBase(fig.video.mp4)} type="video/mp4" />
                 </video>
               ) : (
                 <Image
@@ -346,7 +347,7 @@ const isWide = (fig: (typeof d.figures)[number], i: number) => fig.wide || (oddC
         <div class="section-head">
           <h2>Related</h2>
           {d.related.some((r) => r.href.startsWith('/publications/')) && (
-            <a class="arrow" href="/publications">All publications</a>
+            <a class="arrow" href={withBase('/publications')}>All publications</a>
           )}
         </div>
 
@@ -355,7 +356,7 @@ const isWide = (fig: (typeof d.figures)[number], i: number) => fig.wide || (oddC
             const external = /^https?:\/\//.test(r.href);
             return (
               <li>
-                <a href={r.href} {...(external && { rel: 'noopener', target: '_blank' })}>
+                <a href={withBase(r.href)} {...(external && { rel: 'noopener', target: '_blank' })}>
                   <span class:list={['related-label', external && 'is-external']}>{r.label}</span>
                   {r.note && <span class="related-note">{r.note}</span>}
                 </a>
@@ -410,23 +411,23 @@ const isWide = (fig: (typeof d.figures)[number], i: number) => fig.wide || (oddC
       project, so the only moves left are another one or an email. */}
   <nav class="proj-nav" aria-label="More work">
     {prev ? (
-      <a class="proj-nav-item" href={`/work/${prev.id}`} rel="prev">
+      <a class="proj-nav-item" href={withBase(`/work/${prev.id}`)} rel="prev">
         <span class="label">← Previous</span>
         <span class="proj-nav-title">{prev.data.title}</span>
       </a>
     ) : (
-      <a class="proj-nav-item" href="/work">
+      <a class="proj-nav-item" href={withBase('/work')}>
         <span class="label">← Index</span>
         <span class="proj-nav-title">All work</span>
       </a>
     )}
     {next ? (
-      <a class="proj-nav-item is-end" href={`/work/${next.id}`} rel="next">
+      <a class="proj-nav-item is-end" href={withBase(`/work/${next.id}`)} rel="next">
         <span class="label">Next →</span>
         <span class="proj-nav-title">{next.data.title}</span>
       </a>
     ) : (
-      <a class="proj-nav-item is-end" href="/work">
+      <a class="proj-nav-item is-end" href={withBase('/work')}>
         <span class="label">Index →</span>
         <span class="proj-nav-title">All work</span>
       </a>

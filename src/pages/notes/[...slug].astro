@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths';
 import type { GetStaticPaths } from 'astro';
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -74,7 +75,7 @@ if (d.title.length > 110) {
       {(d.tags.length > 0 || d.project) && (
         <div class="tags note-tags">
           {d.project && (
-            <a class="tag is-link" href={`/work/${d.project}`}>{d.project}</a>
+            <a class="tag is-link" href={withBase(`/work/${d.project}`)}>{d.project}</a>
           )}
           {d.tags.map((tag) => <span class="tag">{tag}</span>)}
         </div>
@@ -84,23 +85,23 @@ if (d.title.length > 110) {
 
   <nav class="proj-nav" aria-label="More notes">
     {older ? (
-      <a class="proj-nav-item" href={`/notes/${older.id}`} rel="prev">
+      <a class="proj-nav-item" href={withBase(`/notes/${older.id}`)} rel="prev">
         <span class="label">← Older</span>
         <span class="proj-nav-title">{older.data.title}</span>
       </a>
     ) : (
-      <a class="proj-nav-item" href="/notes">
+      <a class="proj-nav-item" href={withBase('/notes')}>
         <span class="label">← All</span>
         <span class="proj-nav-title">All notes</span>
       </a>
     )}
     {newer ? (
-      <a class="proj-nav-item is-end" href={`/notes/${newer.id}`} rel="next">
+      <a class="proj-nav-item is-end" href={withBase(`/notes/${newer.id}`)} rel="next">
         <span class="label">Newer →</span>
         <span class="proj-nav-title">{newer.data.title}</span>
       </a>
     ) : (
-      <a class="proj-nav-item is-end" href="/notes">
+      <a class="proj-nav-item is-end" href={withBase('/notes')}>
         <span class="label">All →</span>
         <span class="proj-nav-title">All notes</span>
       </a>

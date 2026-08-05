@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../lib/paths';
 import { getImage } from 'astro:assets';
 import { SITE } from '../consts';
 
@@ -47,7 +48,7 @@ const links = SITE.profiles;
 
       <div class="inline-links reveal" data-d="3">
         {links.map((link) => (
-          <a class="chip" href={link.href} rel={link.sameAs ? 'me noopener' : undefined}>
+          <a class="chip" href={withBase(link.href)} rel={link.sameAs ? 'me noopener' : undefined}>
             {link.label}
           </a>
         ))}

@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../lib/paths';
 import type { Publication } from '../lib/publications';
 import { SITE } from '../consts';
 
@@ -8,7 +9,7 @@ export interface Props {
 }
 
 const { pub, showYear = true } = Astro.props;
-const href = `/publications/${pub.slug}`;
+const href = withBase(`/publications/${pub.slug}`);
 ---
 
 <li class="entry" data-kind={pub.kind}>
@@ -32,7 +33,7 @@ const href = `/publications/${pub.slug}`;
 
     <div class="res">
       <a href={href}>Details</a>
-      {pub.pdf && <a href={pub.pdf} data-pdf>PDF</a>}
+      {pub.pdf && <a href={withBase(pub.pdf)} data-pdf>PDF</a>}
       {pub.doiUrl && <a href={pub.doiUrl} rel="noopener">DOI</a>}
       {pub.externalUrl && !pub.doiUrl && <a href={pub.externalUrl} rel="noopener">Link</a>}
     </div>

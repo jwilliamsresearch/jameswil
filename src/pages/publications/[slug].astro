@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths';
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHead from '../../components/PageHead.astro';
@@ -65,7 +66,7 @@ const related = publications
     )}
 
     <div class="inline-links" style="margin-top:2rem">
-      {pub.pdf && <a class="chip is-solid" href={pub.pdf} download>Download PDF</a>}
+      {pub.pdf && <a class="chip is-solid" href={withBase(pub.pdf)} download>Download PDF</a>}
       {pub.doiUrl && <a class="chip" href={pub.doiUrl} rel="noopener">View at publisher</a>}
       {pub.externalUrl && !pub.doiUrl && <a class="chip" href={pub.externalUrl} rel="noopener">View online</a>}
       {pub.abstract && <a class="chip" href="#abstract">Abstract</a>}
@@ -130,15 +131,15 @@ const related = publications
       <div class="wrap">
         <div class="section-head">
           <h2>Full text</h2>
-          <a class="arrow" href={pub.pdf} download>Download PDF</a>
+          <a class="arrow" href={withBase(pub.pdf)} download>Download PDF</a>
         </div>
 
         <div class="pdf-frame">
-          <object data={`${pub.pdf}#view=FitH`} type="application/pdf" aria-label={`PDF of ${pub.title}`}>
+          <object data={`${withBase(pub.pdf)}#view=FitH`} type="application/pdf" aria-label={`PDF of ${pub.title}`}>
             <div class="pdf-fallback">
               <p class="prose">
                 This browser will not display the PDF inline.
-                <a href={pub.pdf} download>Download it instead</a>.
+                <a href={withBase(pub.pdf)} download>Download it instead</a>.
               </p>
             </div>
           </object>
@@ -178,7 +179,7 @@ const related = publications
       <div class="wrap">
         <div class="section-head">
           <h2>Related work</h2>
-          <a class="arrow" href="/publications">All publications</a>
+          <a class="arrow" href={withBase('/publications')}>All publications</a>
         </div>
         <ul class="entries">
           {related.map((other) => <PublicationRow pub={other} />)}
@@ -189,7 +190,7 @@ const related = publications
 
   <section class="section">
     <div class="wrap">
-      <a class="arrow" href="/publications">Back to all publications</a>
+      <a class="arrow" href={withBase('/publications')}>Back to all publications</a>
     </div>
   </section>
 </BaseLayout>

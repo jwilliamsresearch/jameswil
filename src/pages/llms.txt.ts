@@ -1,6 +1,7 @@
 import { getCollection } from 'astro:content';
 import type { APIContext } from 'astro';
-import { SITE } from '../consts';
+import { ORIGIN, SITE } from '../consts';
+import { absoluteUrl } from '../lib/paths';
 import { publications } from '../lib/publications';
 
 /**
@@ -8,8 +9,8 @@ import { publications } from '../lib/publications';
  * convention. Everything here is generated, so it cannot drift from the pages.
  */
 export async function GET(context: APIContext) {
-  const base = (context.site ?? new URL(SITE.url)).origin;
-  const url = (path: string) => `${base}${path}`;
+  const origin = (context.site ?? new URL(ORIGIN)).origin;
+  const url = (path: string) => absoluteUrl(origin, path);
 
   const [projects, teaching] = await Promise.all([
     getCollection('work', ({ data }) => !data.draft),

@@ -1,8 +1,9 @@
 import type { APIContext } from 'astro';
-import { SITE } from '../consts';
+import { ORIGIN, SITE } from '../consts';
+import { absoluteUrl } from '../lib/paths';
 
 export function GET(context: APIContext) {
-  const base = (context.site ?? new URL(SITE.url)).origin;
+  const origin = (context.site ?? new URL(ORIGIN)).origin;
 
   const body = `# ${SITE.name}
 User-agent: *
@@ -22,7 +23,7 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: ${base}/sitemap-index.xml
+Sitemap: ${absoluteUrl(origin, '/sitemap-index.xml')}
 `;
 
   return new Response(body, {
