@@ -5,7 +5,7 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHead from '../../components/PageHead.astro';
 import { breadcrumbSchema, creativeWorkSchema } from '../../lib/schema';
-import { lecturesFor } from '../../lib/lectures';
+import { deckUrl, lecturesFor } from '../../lib/lectures';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const courses = await getCollection('teaching', ({ data }) => !data.draft);
@@ -20,7 +20,7 @@ const { Content } = await render(course);
 const d = course.data;
 const path = `/teaching/${course.id}`;
 
-// Decks are served from a separate deployment at /lectures.
+// Decks are served from a separate deployment at lectures.jameswil.com.
 const lectures = lecturesFor(d.code);
 ---
 
@@ -95,7 +95,7 @@ const lectures = lecturesFor(d.code);
               <ol class="session-list">
                 {lectures.sessions.map((session) => (
                   <li>
-                    <a href={session.url}>
+                    <a href={deckUrl(session.url)} rel="noopener">
                       <span class="session-n">{String(session.n).padStart(2, '0')}</span>
                       <span class="session-title">{session.title}</span>
                     </a>
