@@ -1,21 +1,18 @@
 /**
- * Rebuilds src/data/lectures.json from the deck site itself.
+ * Scans the lecture decks and writes a manifest the Astro site consumes, so
+ * the teaching pages can list sessions without the two repos being coupled.
+ * Re-run this whenever decks are added or renamed.
  *
- * This used to scan a local folder, which drifted: the manifest listed three
- * modules that were never published, so 36 links on the teaching pages 404'd,
- * and it missed CMU601, which was live. Crawling the deployment means the
- * teaching pages can only link to decks that actually resolve.
- *
- * Deck file naming is not uniform (session1.html on most modules, week5.html
- * on CMU601), so names are read rather than assumed.
- *
- * Usage:  node scripts/sync-lectures.mjs
- *         node scripts/sync-lectures.mjs https://lectures.jameswil.com
+ * Source of truth is the decks folder itself, c:/Users/JFLWi/jameswil/lectures,
+ * which is what gets deployed to lectures.jameswil.com. URLs are written
+ * relative to that host: /CODE/sessionN/, matching the folder layout, because
+ * the decks sit at the root of their own domain rather than under /lectures.
  */
-import { writeFileSync } from 'node:fs';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
-const ORIGIN = (process.argv[2] ?? 'https://lectures.jameswil.com').replace(/\/+$/, '');
-const OUT = new URL('../src/data/lectures.json', import.meta.url);
+const LECTURES = process.argv[2] ?? 'c:/Users/JFLWi/jameswil/lectures';
+const OUT = 'c:/Users/JFLWi/jameswil/jameswil/src/data/lectures.json';
 
 const strip = (s) =>
   s
@@ -26,42 +23,45 @@ const strip = (s) =>
     .replace(/\s+/g, ' ')
     .trim();
 
-async function get(path) {
-  const res = await fetch(`${ORIGIN}${path}`);
-  if (!res.ok) throw new Error(`${res.status} on ${path}`);
-  return res.text();
-}
-
-/** Module codes are the directories linked from the deck site index. */
-async function moduleCodes() {
-  const html = await get('/');
-  return [...new Set([...html.matchAll(/href="([A-Za-z0-9-]+)\/index\.html"/g)].map((m) => m[1]))];
-}
-
-/** Every slideshow linked from a module page, in document order. */
-async function sessions(code) {
-  const html = await get(`/${code}/`);
-  const seen = new Map();
-  for (const m of html.matchAll(/href="(slideshows\/([^"]+)\.html)"[^>]*>([\s\S]*?)<\/a>/g)) {
-    const [, href, file, label] = m;
-    if (seen.has(href)) continue;
-    seen.set(href, {
-      n: Number(file.match(/\d+/)?.[0] ?? seen.size + 1),
-      title: strip(label) || file,
-      url: `/${code}/${href}`,
-    });
-  }
-  return [...seen.values()].sort((a, b) => a.n - b.n);
-}
+const entries = await readdir(LECTURES, { withFileTypes: true });
+const courses = entries
+  .filter((e) => e.isDirectory() && e.name !== 'libs')
+  .map((e) => e.name)
+  .sort();
 
 const modules = [];
-for (const code of await moduleCodes()) {
-  const list = await sessions(code);
-  if (list.length === 0) continue;
-  modules.push({ code, slug: code.toLowerCase(), url: `/${code}/`, sessions: list });
-  console.log(`${code.padEnd(16)} ${list.length} decks`);
+
+for (const code of courses) {
+  const dirs = (await readdir(join(LECTURES, code), { withFileTypes: true }))
+    .filter((e) => e.isDirectory() && /^session\d+$/.test(e.name))
+    .map((e) => Number.parseInt(e.name.replace('session', ''), 10))
+    .sort((a, b) => a - b);
+
+  if (!dirs.length) continue;
+
+  const sessions = [];
+
+  for (const n of dirs) {
+    const html = await readFile(join(LECTURES, code, `session${n}`, 'index.html'), 'utf8');
+
+    // Module names are not reliable here: some decks put the module in h1,
+    // others put the session topic there. Titles come from the teaching
+    // content collection instead, which a human maintains.
+    const bar = html.match(/<span class="jw-session">([\s\S]*?)<\/span>/i);
+    const h2 = html.match(/<h2[^>]*>\s*Session\s*\d+\s*:\s*([\s\S]*?)<\/h2>/i);
+    const label = strip(bar?.[1] ?? h2?.[1] ?? `Session ${n}`);
+
+    sessions.push({ n, title: label, url: `/${code}/session${n}/` });
+  }
+
+  modules.push({
+    code,
+    slug: code.toLowerCase(),
+    url: `/${code}/`,
+    sessions,
+  });
 }
 
-modules.sort((a, b) => a.code.localeCompare(b.code));
-writeFileSync(OUT, `${JSON.stringify(modules, null, 2)}\n`, 'utf8');
-console.log(`wrote ${modules.length} modules to src/data/lectures.json`);
+await writeFile(OUT, `${JSON.stringify(modules, null, 2)}\n`, 'utf8');
+
+console.log(modules.map((m) => `${m.code.padEnd(16)} ${m.sessions.length} sessions`).join('\n'));

@@ -7,62 +7,129 @@
       {
         "n": 1,
         "title": "Module Introduction & Web Architecture",
-        "url": "/CMM721/slideshows/session1.html"
+        "url": "/CMM721/session1/"
       },
       {
         "n": 2,
         "title": "HTML5 & Semantic Structure",
-        "url": "/CMM721/slideshows/session2.html"
+        "url": "/CMM721/session2/"
       },
       {
         "n": 3,
         "title": "CSS3 & Responsive Design",
-        "url": "/CMM721/slideshows/session3.html"
+        "url": "/CMM721/session3/"
       },
       {
         "n": 4,
         "title": "JavaScript Fundamentals",
-        "url": "/CMM721/slideshows/session4.html"
+        "url": "/CMM721/session4/"
       },
       {
         "n": 5,
         "title": "Asynchronous JavaScript & APIs",
-        "url": "/CMM721/slideshows/session5.html"
+        "url": "/CMM721/session5/"
       },
       {
         "n": 6,
         "title": "Django Basics",
-        "url": "/CMM721/slideshows/session6.html"
+        "url": "/CMM721/session6/"
       },
       {
         "n": 7,
         "title": "Django ORM & CRUD",
-        "url": "/CMM721/slideshows/session7.html"
+        "url": "/CMM721/session7/"
       },
       {
         "n": 8,
         "title": "Django REST Framework",
-        "url": "/CMM721/slideshows/session8.html"
+        "url": "/CMM721/session8/"
       },
       {
         "n": 9,
         "title": "React & State Management",
-        "url": "/CMM721/slideshows/session9.html"
+        "url": "/CMM721/session9/"
       },
       {
         "n": 10,
         "title": "Web App Critique",
-        "url": "/CMM721/slideshows/session10.html"
+        "url": "/CMM721/session10/"
       },
       {
         "n": 11,
         "title": "Comparative Critique",
-        "url": "/CMM721/slideshows/session11.html"
+        "url": "/CMM721/session11/"
       },
       {
         "n": 12,
         "title": "Project Finalisation",
-        "url": "/CMM721/slideshows/session12.html"
+        "url": "/CMM721/session12/"
+      }
+    ]
+  },
+  {
+    "code": "CMM7XX",
+    "slug": "cmm7xx",
+    "url": "/CMM7XX/",
+    "sessions": [
+      {
+        "n": 1,
+        "title": "Introduction to Information Security",
+        "url": "/CMM7XX/session1/"
+      },
+      {
+        "n": 2,
+        "title": "Introduction to Cryptography",
+        "url": "/CMM7XX/session2/"
+      },
+      {
+        "n": 3,
+        "title": "Symmetric Cryptography",
+        "url": "/CMM7XX/session3/"
+      },
+      {
+        "n": 4,
+        "title": "Asymmetric Cryptography",
+        "url": "/CMM7XX/session4/"
+      },
+      {
+        "n": 5,
+        "title": "Hash Functions & Signatures",
+        "url": "/CMM7XX/session5/"
+      },
+      {
+        "n": 6,
+        "title": "Authentication & Access Control",
+        "url": "/CMM7XX/session6/"
+      },
+      {
+        "n": 7,
+        "title": "Software Security",
+        "url": "/CMM7XX/session7/"
+      },
+      {
+        "n": 8,
+        "title": "Malware & Firewalls",
+        "url": "/CMM7XX/session8/"
+      },
+      {
+        "n": 9,
+        "title": "Intrusion Detection",
+        "url": "/CMM7XX/session9/"
+      },
+      {
+        "n": 10,
+        "title": "NIST CSF & Risk Assessment",
+        "url": "/CMM7XX/session10/"
+      },
+      {
+        "n": 11,
+        "title": "Security Policy",
+        "url": "/CMM7XX/session11/"
+      },
+      {
+        "n": 12,
+        "title": "Laws & Ethics",
+        "url": "/CMM7XX/session12/"
       }
     ]
   },
@@ -74,62 +141,62 @@
       {
         "n": 1,
         "title": "Introduction to HTML",
-        "url": "/CMU422/slideshows/session1.html"
+        "url": "/CMU422/session1/"
       },
       {
         "n": 2,
         "title": "HTML Forms and Input",
-        "url": "/CMU422/slideshows/session2.html"
+        "url": "/CMU422/session2/"
       },
       {
         "n": 3,
         "title": "CSS Fundamentals",
-        "url": "/CMU422/slideshows/session3.html"
+        "url": "/CMU422/session3/"
       },
       {
         "n": 4,
         "title": "CSS Layout and Box Model",
-        "url": "/CMU422/slideshows/session4.html"
+        "url": "/CMU422/session4/"
       },
       {
         "n": 5,
         "title": "CSS Flexbox and Grid",
-        "url": "/CMU422/slideshows/session5.html"
+        "url": "/CMU422/session5/"
       },
       {
         "n": 6,
         "title": "JavaScript Basics",
-        "url": "/CMU422/slideshows/session6.html"
+        "url": "/CMU422/session6/"
       },
       {
         "n": 7,
         "title": "JavaScript Events and Interactivity",
-        "url": "/CMU422/slideshows/session7.html"
+        "url": "/CMU422/session7/"
       },
       {
         "n": 8,
         "title": "JavaScript Advanced Concepts",
-        "url": "/CMU422/slideshows/session8.html"
+        "url": "/CMU422/session8/"
       },
       {
         "n": 9,
         "title": "Web APIs and External Libraries",
-        "url": "/CMU422/slideshows/session9.html"
+        "url": "/CMU422/session9/"
       },
       {
         "n": 10,
         "title": "Project Planning and Development",
-        "url": "/CMU422/slideshows/session10.html"
+        "url": "/CMU422/session10/"
       },
       {
         "n": 11,
         "title": "Advanced Topics and Future Trends",
-        "url": "/CMU422/slideshows/session11.html"
+        "url": "/CMU422/session11/"
       },
       {
         "n": 12,
         "title": "Final Project and Assessment",
-        "url": "/CMU422/slideshows/session12.html"
+        "url": "/CMU422/session12/"
       }
     ]
   },
@@ -141,62 +208,62 @@
       {
         "n": 1,
         "title": "Introduction to Full-stack Development",
-        "url": "/CMU529/slideshows/session1.html"
+        "url": "/CMU529/session1/"
       },
       {
         "n": 2,
         "title": "Bootstrap Framework Fundamentals",
-        "url": "/CMU529/slideshows/session2.html"
+        "url": "/CMU529/session2/"
       },
       {
         "n": 3,
         "title": "Bootstrap Components & Customization",
-        "url": "/CMU529/slideshows/session3.html"
+        "url": "/CMU529/session3/"
       },
       {
         "n": 4,
         "title": "PHP Fundamentals & Server Setup",
-        "url": "/CMU529/slideshows/session4.html"
+        "url": "/CMU529/session4/"
       },
       {
         "n": 5,
         "title": "PHP Forms & Data Processing",
-        "url": "/CMU529/slideshows/session5.html"
+        "url": "/CMU529/session5/"
       },
       {
         "n": 6,
         "title": "PHP Forms & Database Integration",
-        "url": "/CMU529/slideshows/session6.html"
+        "url": "/CMU529/session6/"
       },
       {
         "n": 7,
         "title": "PHP Database Connectivity",
-        "url": "/CMU529/slideshows/session7.html"
+        "url": "/CMU529/session7/"
       },
       {
         "n": 8,
         "title": "Session Management & User Authentication",
-        "url": "/CMU529/slideshows/session8.html"
+        "url": "/CMU529/session8/"
       },
       {
         "n": 9,
         "title": "E-commerce Core Features",
-        "url": "/CMU529/slideshows/session9.html"
+        "url": "/CMU529/session9/"
       },
       {
         "n": 10,
-        "title": "Session 10",
-        "url": "/CMU529/slideshows/session10.html"
+        "title": "Advanced PHP Features & Security",
+        "url": "/CMU529/session10/"
       },
       {
         "n": 11,
-        "title": "Session 11",
-        "url": "/CMU529/slideshows/session11.html"
+        "title": "Modern JavaScript Libraries",
+        "url": "/CMU529/session11/"
       },
       {
         "n": 12,
         "title": "Final Project Development",
-        "url": "/CMU529/slideshows/session12.html"
+        "url": "/CMU529/session12/"
       }
     ]
   },
@@ -208,62 +275,62 @@
       {
         "n": 1,
         "title": "Cyber Security Fundamentals & Lab Setup",
-        "url": "/CMU540/slideshows/session1.html"
+        "url": "/CMU540/session1/"
       },
       {
         "n": 2,
         "title": "WEB-ACCESS-01 - Broken Access Control",
-        "url": "/CMU540/slideshows/session2.html"
+        "url": "/CMU540/session2/"
       },
       {
         "n": 3,
         "title": "WEB-CRYPTO-01 - Cryptographic Failures",
-        "url": "/CMU540/slideshows/session3.html"
+        "url": "/CMU540/session3/"
       },
       {
         "n": 4,
         "title": "WEB-SQL-01 - SQL Injection",
-        "url": "/CMU540/slideshows/session4.html"
+        "url": "/CMU540/session4/"
       },
       {
         "n": 5,
         "title": "WEB-XSS-01 - Cross-Site Scripting",
-        "url": "/CMU540/slideshows/session5.html"
+        "url": "/CMU540/session5/"
       },
       {
         "n": 6,
-        "title": "WEB-CSRF-01 & WEB-CONFIG-01",
-        "url": "/CMU540/slideshows/session6.html"
+        "title": "WEB-CSRF-01 & WEB-CONFIG-01 - CSRF and Misconfiguration",
+        "url": "/CMU540/session6/"
       },
       {
         "n": 7,
-        "title": "WEB-VULN-01 & WEB-AUTH-01",
-        "url": "/CMU540/slideshows/session7.html"
+        "title": "WEB-VULN-01 & WEB-AUTH-01 - Vulnerable Components & Authentication",
+        "url": "/CMU540/session7/"
       },
       {
         "n": 8,
-        "title": "WEB-DATA-01 & WEB-LOG-01",
-        "url": "/CMU540/slideshows/session8.html"
+        "title": "WEB-DATA-01 & WEB-LOG-01 - Data Exposure & Logging",
+        "url": "/CMU540/session8/"
       },
       {
         "n": 9,
-        "title": "WEB-SSRF-01 & WEB-UPLOAD-01",
-        "url": "/CMU540/slideshows/session9.html"
+        "title": "WEB-SSRF-01 & WEB-UPLOAD-01 - SSRF & File Upload Security",
+        "url": "/CMU540/session9/"
       },
       {
         "n": 10,
         "title": "HACKATHON",
-        "url": "/CMU540/slideshows/session10.html"
+        "url": "/CMU540/session10/"
       },
       {
         "n": 11,
-        "title": "NET-PROTO-01, NET-SCAN-01 & NET-DNS-01",
-        "url": "/CMU540/slideshows/session11.html"
+        "title": "NET-PROTO-01, NET-SCAN-01 & NET-DNS-01 - Network Security Fundamentals",
+        "url": "/CMU540/session11/"
       },
       {
         "n": 12,
         "title": "NET-TRAFFIC-01, NET-FIREWALL-01 & Final Assessment",
-        "url": "/CMU540/slideshows/session12.html"
+        "url": "/CMU540/session12/"
       }
     ]
   },
@@ -274,85 +341,197 @@
     "sessions": [
       {
         "n": 1,
-        "title": "Orientation, Project Ideation and Specialism Mapping",
-        "url": "/CMU597/slideshows/session1.html"
+        "title": "Session 1",
+        "url": "/CMU597/session1/"
       },
       {
         "n": 2,
-        "title": "Briefs, Requirements and Early Technical Validation",
-        "url": "/CMU597/slideshows/session2.html"
+        "title": "Session 2",
+        "url": "/CMU597/session2/"
       },
       {
         "n": 3,
-        "title": "Project Management & Sprint Zero",
-        "url": "/CMU597/slideshows/session3.html"
+        "title": "Session 3",
+        "url": "/CMU597/session3/"
       },
       {
         "n": 4,
-        "title": "Development Sprint 1 (Core Foundations)",
-        "url": "/CMU597/slideshows/session4.html"
+        "title": "Session 4",
+        "url": "/CMU597/session4/"
       },
       {
         "n": 5,
-        "title": "Development Sprint 2 (Feature Build)",
-        "url": "/CMU597/slideshows/session5.html"
+        "title": "Session 5",
+        "url": "/CMU597/session5/"
       },
       {
         "n": 6,
-        "title": "Ethical, Legal & Professional Issues + Sprint 2 Continuation",
-        "url": "/CMU597/slideshows/session6.html"
+        "title": "Session 6",
+        "url": "/CMU597/session6/"
       },
       {
         "n": 7,
-        "title": "Development Sprint 3 (Integrations Sprint)",
-        "url": "/CMU597/slideshows/session7.html"
+        "title": "Session 7",
+        "url": "/CMU597/session7/"
       },
       {
         "n": 8,
-        "title": "Development Sprint 4 (Refinement & System Cohesion)",
-        "url": "/CMU597/slideshows/session8.html"
+        "title": "Session 8",
+        "url": "/CMU597/session8/"
       },
       {
         "n": 9,
-        "title": "Development Sprint 5 (Polish and Stability)",
-        "url": "/CMU597/slideshows/session9.html"
+        "title": "Session 9",
+        "url": "/CMU597/session9/"
       },
       {
         "n": 10,
-        "title": "Presentation Sprint 1 (Building the Presentation & Demo)",
-        "url": "/CMU597/slideshows/session10.html"
+        "title": "Session 10",
+        "url": "/CMU597/session10/"
       },
       {
         "n": 11,
-        "title": "Development Sprint 6 (Final Feature & Integration)",
-        "url": "/CMU597/slideshows/session11.html"
+        "title": "Session 11",
+        "url": "/CMU597/session11/"
       },
       {
         "n": 12,
-        "title": "Final Presentation Sprint",
-        "url": "/CMU597/slideshows/session12.html"
+        "title": "Session 12",
+        "url": "/CMU597/session12/"
       }
     ]
   },
   {
-    "code": "CMU601",
-    "slug": "cmu601",
-    "url": "/CMU601/",
+    "code": "CMU5XX-INFOSEC",
+    "slug": "cmu5xx-infosec",
+    "url": "/CMU5XX-INFOSEC/",
     "sessions": [
       {
+        "n": 1,
+        "title": "Secure IS & Architecture",
+        "url": "/CMU5XX-INFOSEC/session1/"
+      },
+      {
+        "n": 2,
+        "title": "Cyber-Physical & ICS",
+        "url": "/CMU5XX-INFOSEC/session2/"
+      },
+      {
+        "n": 3,
+        "title": "Policies & Procedures",
+        "url": "/CMU5XX-INFOSEC/session3/"
+      },
+      {
+        "n": 4,
+        "title": "Planning & Admin",
+        "url": "/CMU5XX-INFOSEC/session4/"
+      },
+      {
         "n": 5,
-        "title": "Beginning Your Development",
-        "url": "/CMU601/slideshows/week5.html"
+        "title": "Asset & Risk Mgmt",
+        "url": "/CMU5XX-INFOSEC/session5/"
       },
       {
         "n": 6,
-        "title": "Using GitHub & Project Management Tools",
-        "url": "/CMU601/slideshows/week6.html"
+        "title": "Human Security",
+        "url": "/CMU5XX-INFOSEC/session6/"
       },
       {
         "n": 7,
-        "title": "Doing Design Diagrams",
-        "url": "/CMU601/slideshows/week7.html"
+        "title": "Management Concepts",
+        "url": "/CMU5XX-INFOSEC/session7/"
+      },
+      {
+        "n": 8,
+        "title": "NIST Framework",
+        "url": "/CMU5XX-INFOSEC/session8/"
+      },
+      {
+        "n": 9,
+        "title": "Governance & Roles",
+        "url": "/CMU5XX-INFOSEC/session9/"
+      },
+      {
+        "n": 10,
+        "title": "Security Plans",
+        "url": "/CMU5XX-INFOSEC/session10/"
+      },
+      {
+        "n": 11,
+        "title": "IR & Business Continuity",
+        "url": "/CMU5XX-INFOSEC/session11/"
+      },
+      {
+        "n": 12,
+        "title": "Compliance & Audit",
+        "url": "/CMU5XX-INFOSEC/session12/"
+      }
+    ]
+  },
+  {
+    "code": "CMU6XX",
+    "slug": "cmu6xx",
+    "url": "/CMU6XX/",
+    "sessions": [
+      {
+        "n": 1,
+        "title": "Intro to InfoSec & Governance",
+        "url": "/CMU6XX/session1/"
+      },
+      {
+        "n": 2,
+        "title": "Reconnaissance & Footprinting",
+        "url": "/CMU6XX/session2/"
+      },
+      {
+        "n": 3,
+        "title": "Scanning & Enumeration",
+        "url": "/CMU6XX/session3/"
+      },
+      {
+        "n": 4,
+        "title": "Vulnerability Analysis",
+        "url": "/CMU6XX/session4/"
+      },
+      {
+        "n": 5,
+        "title": "System Hacking",
+        "url": "/CMU6XX/session5/"
+      },
+      {
+        "n": 6,
+        "title": "Sniffing & MITM",
+        "url": "/CMU6XX/session6/"
+      },
+      {
+        "n": 7,
+        "title": "Social Engineering",
+        "url": "/CMU6XX/session7/"
+      },
+      {
+        "n": 8,
+        "title": "Web App Hacking",
+        "url": "/CMU6XX/session8/"
+      },
+      {
+        "n": 9,
+        "title": "Wireless & Mobile",
+        "url": "/CMU6XX/session9/"
+      },
+      {
+        "n": 10,
+        "title": "Cloud & IoT Security",
+        "url": "/CMU6XX/session10/"
+      },
+      {
+        "n": 11,
+        "title": "Cryptography",
+        "url": "/CMU6XX/session11/"
+      },
+      {
+        "n": 12,
+        "title": "Reporting & Ethics",
+        "url": "/CMU6XX/session12/"
       }
     ]
   }
