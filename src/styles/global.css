@@ -1065,8 +1065,53 @@ a.card:hover, .card:hover { background: var(--bg-sunk); }
   font-size: 0.8125rem;
 }
 .prose pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+
+/* Shiki is configured with both themes, which makes it emit the dark palette as
+   custom properties and then expect the page to choose. Nothing was choosing,
+   so a code block kept its light background while the rest of the page went
+   dark. The inline styles Shiki writes onto every span are what force the
+   !important here. The surface stays --bg-sunk rather than the theme's own, so
+   code sits on the same plate as every other sunk panel. */
+:root[data-theme="dark"] .prose .astro-code,
+:root[data-theme="dark"] .prose .astro-code span {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+}
+:root[data-theme="dark"] .prose .astro-code { background-color: var(--bg-sunk) !important; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .prose .astro-code,
+  :root:not([data-theme="light"]) .prose .astro-code span {
+    color: var(--shiki-dark) !important;
+    font-style: var(--shiki-dark-font-style) !important;
+  }
+  :root:not([data-theme="light"]) .prose .astro-code {
+    background-color: var(--bg-sunk) !important;
+  }
+}
 .prose hr { border: 0; border-top: 1px solid var(--line); margin-block: 2rem; }
 .prose img { border: 1px solid var(--line); }
+
+/* A greyscale figure has no hue to lose, so inverting it is a faithful dark
+   theme rather than an approximation. Done in CSS, not with a second file or
+   a media query inside the SVG, because only this side of the boundary knows
+   about the manual theme toggle. Never put a photograph in this class. */
+.prose img.fig-mono { border: 0; }
+:root[data-theme="dark"] .prose img.fig-mono { filter: invert(1); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .prose img.fig-mono { filter: invert(1); }
+}
+
+/* Micro visualisations: figures small enough to sit in a table cell or a line
+   of prose. Drawn in currentColor so both themes are the same file, and given
+   no border, because at this size a frame is most of the ink. */
+.prose svg.fig-inline {
+  display: inline-block;
+  vertical-align: -0.1em;
+  color: var(--fg);
+  overflow: visible;
+}
+.prose td svg.fig-inline { vertical-align: middle; display: block; }
+.prose td:has(> svg.fig-inline) { padding-right: 1rem; }
 
 /* Tables have to scroll rather than push the page sideways. */
 .prose table {

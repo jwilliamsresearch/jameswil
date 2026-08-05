@@ -16,7 +16,11 @@ const rendered = await Promise.all(
 /* The brevity cap is enforced at build rather than trusted to discipline. */
 const CAP = 300;
 for (const note of notes) {
-  const words = note.body?.trim().split(/\s+/).filter(Boolean).length ?? 0;
+  /* Markup is not prose. An inline SVG figure is a few hundred whitespace
+     separated tokens and none of them are words a reader reads, so tags come
+     out before counting. Alt text goes with them, for the same reason. */
+  const prose = (note.body ?? '').replace(/<[^>]*>/g, ' ');
+  const words = prose.trim().split(/\s+/).filter(Boolean).length;
   if (words > CAP) {
     console.warn(
       `[notes] ${note.id} runs to ${words} words, over the ${CAP}-word cap. ` +

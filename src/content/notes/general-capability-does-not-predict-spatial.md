@@ -1,6 +1,6 @@
 ---
-title: "General capability barely predicts spatial reasoning"
-date: 2026-08-04
+title: "General capability barely predicts spatial reasoning in LLMs"
+date: 2026-08-05
 tags: [Benchmarks, GeoAI, LLM]
 draft: false
 ---
@@ -44,7 +44,8 @@ entirely plausible.
 
 Axis order is near-solved: nine of eleven score 100. Bearing is not: four
 score zero. Nobody should be computing geodesy in a language model anyway, but
-plenty of agent frameworks now do.
+plenty of [agent frameworks now do](/work/geon). It is also [why I assess
+reading code](/notes/teaching-web-development-when-code-is-free).
 
 *46 tasks, one run, $5.20. Ground truth computed, not written. Single run, so
 no variance estimate.*
