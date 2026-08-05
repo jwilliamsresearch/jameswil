@@ -6,7 +6,7 @@ status: Active
 role: Lead developer
 tags: [React, TypeScript, Leaflet, Esri, H3, Three.js, Supabase, PostGIS]
 featured: true
-order: 5
+order: 3
 updated: 2026-08-04
 
 logo: ../../assets/work/parm-x/logo.png

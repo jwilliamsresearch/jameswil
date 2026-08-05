@@ -9,9 +9,17 @@ import { SITE } from '../consts';
 import { publications, selectedPublications } from '../lib/publications';
 import { personSchema, websiteSchema } from '../lib/schema';
 
-const projects = (await getCollection('work', ({ data }) => !data.draft))
-  .sort((a, b) => a.data.order - b.data.order)
-  .slice(0, 4);
+/* Selected work is the four flagged `featured`, in `order`. If fewer than
+   four are flagged the rest fill from the same ordering, so the section is
+   never short. Flagging everything is the same as flagging nothing, which is
+   why the flag now decides the home page rather than sitting unread. */
+const allWork = (await getCollection('work', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const projects = [
+  ...allWork.filter((p) => p.data.featured),
+  ...allWork.filter((p) => !p.data.featured),
+].slice(0, 4);
 
 const recent = (selectedPublications.length >= 3 ? selectedPublications : publications).slice(0, 3);
 

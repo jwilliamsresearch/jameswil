@@ -5,7 +5,7 @@ period: 2024 to 2026
 status: Active
 role: Author and lead developer
 tags: [Open format, GeoAI, LLM, Python, Rust, TypeScript, Semantic data]
-featured: true
+featured: false
 order: 7
 updated: 2026-08-04
 

@@ -5,8 +5,8 @@ period: 2020 to 2024
 status: Complete
 role: Lead developer and researcher
 tags: [Leaflet, "Turf.js", JavaScript, Platial analysis, Qualitative GIS, HCI]
-featured: true
-order: 4
+featured: false
+order: 5
 updated: 2026-08-04
 
 logo: ../../assets/work/walkgis/logo.png

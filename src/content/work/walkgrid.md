@@ -5,8 +5,8 @@ period: 2020 to 2024
 status: Active
 role: Lead developer and researcher
 tags: [H3, PostGIS, OSRM, LLM, Spatial similarity, Active travel, HCI]
-featured: true
-order: 3
+featured: false
+order: 4
 updated: 2026-08-04
 
 logo: ../../assets/work/walkgrid/logo.png

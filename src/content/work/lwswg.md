@@ -5,7 +5,7 @@ period: 2024 to 2025
 status: Complete
 role: Project lead
 tags: [User research, Geospatial analysis, UX design, Policy frameworks, Open access]
-featured: true
+featured: false
 order: 6
 updated: 2026-08-04
 
