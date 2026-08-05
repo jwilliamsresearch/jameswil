@@ -6,7 +6,7 @@ status: Active
 role: Author and lead developer
 tags: [Open format, GeoAI, LLM, Python, Rust, TypeScript, Semantic data]
 featured: false
-order: 7
+order: 8
 updated: 2026-08-04
 
 logo: ../../assets/work/geon/logo.png

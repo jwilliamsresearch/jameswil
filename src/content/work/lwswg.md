@@ -6,7 +6,7 @@ status: Complete
 role: Project lead
 tags: [User research, Geospatial analysis, UX design, Policy frameworks, Open access]
 featured: false
-order: 6
+order: 7
 updated: 2026-08-04
 
 logo: ../../assets/work/lwswg/logo.png

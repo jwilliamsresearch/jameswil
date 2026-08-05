@@ -6,7 +6,7 @@ status: Complete
 role: Lead developer and researcher
 tags: [Leaflet, "Turf.js", JavaScript, Platial analysis, Qualitative GIS, HCI]
 featured: false
-order: 5
+order: 6
 updated: 2026-08-04
 
 logo: ../../assets/work/walkgis/logo.png
