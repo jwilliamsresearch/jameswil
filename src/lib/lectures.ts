@@ -16,12 +16,18 @@ import manifest from '../data/lectures.json';
 export const LECTURES_ORIGIN = 'https://lectures.jameswil.com';
 
 /**
- * Manifest path to a real URL. The decks sit at the root of their own host,
- * so the historic /lectures prefix comes off on the way out.
+ * Manifest path to a real URL. The manifest records sessions as
+ * /lectures/CODE/sessionN/, which is neither where nor how the decks are
+ * served: they sit at the root of their own host, one HTML file per session
+ * under a slideshows directory. Verified against the live deployment.
  */
 export function deckUrl(path: string): string {
-  const bare = path.replace(/^\/lectures/, '');
-  return `${LECTURES_ORIGIN}${bare}`;
+  const session = path.match(/^\/lectures\/([^/]+)\/session(\d+)\/?$/);
+  if (session) {
+    const [, code, n] = session;
+    return `${LECTURES_ORIGIN}/${code}/slideshows/session${n}.html`;
+  }
+  return `${LECTURES_ORIGIN}${path.replace(/^\/lectures/, '')}`;
 }
 
 export interface LectureSession {
