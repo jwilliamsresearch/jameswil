@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Liminal Toronto</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/notes/h3.umd.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body, #map { width: 100%; height: 100%; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: #f5f4f0; }
+
+  .panel {
+    background: rgba(255,255,255,0.94);
+    padding: 8px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+    color: #222;
+    line-height: 1.5;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.16);
+  }
+  .panel h4 { font-size: 11px; margin-bottom: 5px; letter-spacing: 0.01em; }
+
+  .modes { display: flex; flex-direction: column; gap: 3px; margin-bottom: 7px; }
+  .modes button {
+    font: inherit; font-size: 11px; text-align: left;
+    padding: 4px 7px; border: 1px solid #d6d3cc; border-radius: 4px;
+    background: #fff; color: #444; cursor: pointer; white-space: nowrap;
+  }
+  .modes button:hover { border-color: #999; }
+  .modes button[aria-pressed="true"] {
+    background: #2b2b2b; color: #fff; border-color: #2b2b2b; font-weight: 600;
+  }
+  .modes small { display: block; font-size: 9.5px; opacity: 0.65; font-weight: 400; }
+
+  .ramp { display: flex; gap: 4px; align-items: center; }
+  .ramp-bar {
+    width: 92px; height: 9px; border-radius: 3px; flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.12);
+  }
+  .ends { font-size: 9.5px; color: #666; }
+  .foot { margin-top: 6px; font-size: 9.5px; color: #777; }
+
+  .pop-h { font-size: 12.5px; font-weight: 600; margin-bottom: 1px; }
+  .pop-m { color: #666; font-size: 10.5px; margin-bottom: 6px; }
+  .pop-t { font-size: 11px; border-collapse: collapse; }
+  .pop-t td { padding: 1px 0; }
+  .pop-t td:first-child { padding-right: 10px; }
+  .pop-t td:last-child { text-align: right; color: #555; font-variant-numeric: tabular-nums; }
+  .pop-f { margin-top: 5px; padding-top: 4px; border-top: 1px solid #e5e2dc; font-size: 10px; color: #777; }
+
+  @media (prefers-color-scheme: dark) {
+    body { background: #1a1a1a; }
+    .panel { background: rgba(28,28,28,0.94); color: #e8e6e1; }
+    .modes button { background: #2a2a2a; color: #ccc; border-color: #444; }
+    .modes button[aria-pressed="true"] { background: #e8e6e1; color: #1a1a1a; border-color: #e8e6e1; }
+    .ends, .foot, .pop-m, .pop-f { color: #999; }
+    .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: #262626; color: #e8e6e1; }
+    .pop-t td:last-child { color: #aaa; }
+    .pop-f { border-top-color: #3a3a3a; }
+  }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+/* Viridis-ish: low measure = yellow, high = deep purple. */
+var STOPS = [[253,231,37],[144,215,67],[53,183,121],[33,145,140],[49,104,142],[68,57,131],[68,1,84]];
+
+function ramp(t) {
+  t = Math.max(0, Math.min(1, t));
+  var s = t * (STOPS.length - 1), lo = Math.floor(s),
+      hi = Math.min(STOPS.length - 1, lo + 1), f = s - lo;
+  return 'rgb(' +
+    Math.round(STOPS[lo][0] + f * (STOPS[hi][0] - STOPS[lo][0])) + ',' +
+    Math.round(STOPS[lo][1] + f * (STOPS[hi][1] - STOPS[lo][1])) + ',' +
+    Math.round(STOPS[lo][2] + f * (STOPS[hi][2] - STOPS[lo][2])) + ')';
+}
+
+/* Decile bin. Both measures are right-skewed, so a linear ramp would leave
+   most of the colour range unused. Rank position is what the reader wants
+   anyway: which cells are unusual for this city. */
+function binT(v, breaks) {
+  var i = 0;
+  while (i < breaks.length && v > breaks[i]) i++;
+  return i / breaks.length;
+}
+
+var MODES = {
+  H: {
+    label: 'Mixedness',
+    hint: 'entropy within the cell',
+    lo: 'One category', hi: 'Evenly split',
+    unit: 'bits',
+    get: function (c) { return c[2]; }
+  },
+  J: {
+    label: 'Betweenness',
+    hint: 'divergence from neighbours',
+    lo: 'Like its surroundings', hi: 'On a seam',
+    unit: 'JSD',
+    get: function (c) { return c[3]; }
+  }
+};
+
+var map = L.map('map', { preferCanvas: true }).setView([43.700, -79.390], 11);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+var DATA = null, mode = 'J', layer = null, legendDiv = null, infoEl = null;
+
+fetch('/assets/notes/toronto-entropy.json')
+  .then(function (r) { return r.json(); })
+  .then(function (d) { DATA = d; addControls(); draw(); })
+  .catch(function (e) {
+    console.error(e);
+    var c = L.control({ position: 'bottomleft' });
+    c.onAdd = function () {
+      var el = L.DomUtil.create('div', 'panel');
+      el.textContent = 'Could not load data.';
+      return el;
+    };
+    c.addTo(map);
+  });
+
+function draw() {
+  if (layer) map.removeLayer(layer);
+  layer = L.layerGroup().addTo(map);
+
+  var m = MODES[mode];
+  var breaks = mode === 'H' ? DATA.H.breaks : DATA.jsd.breaks;
+  var drawn = 0;
+
+  DATA.cells.forEach(function (c) {
+    var v = m.get(c);
+    /* Too few qualifying neighbours means no betweenness to report. Skipped
+       rather than drawn as zero: "nothing adjacent to compare against" is a
+       different claim from "identical to its surroundings". */
+    if (v === null || v === undefined) return;
+
+    L.polygon(h3.cellToBoundary(c[0]), {
+      fillColor: ramp(binT(v, breaks)),
+      fillOpacity: 0.75,
+      color: 'rgba(0,0,0,0.16)',
+      weight: 0.5
+    }).bindPopup(popup(c)).addTo(layer);
+    drawn++;
+  });
+
+  updateLegend();
+  updateInfo(drawn);
+}
+
+function popup(c) {
+  var n = c[1], H = c[2], J = c[3], nbrs = c[4], sparse = c[5],
+      furniture = c[6], vacant = c[7];
+
+  var pairs = [];
+  for (var i = 0; i < sparse.length; i += 2) pairs.push([sparse[i], sparse[i + 1]]);
+  pairs.sort(function (a, b) { return b[1] - a[1]; });
+
+  var rows = pairs.map(function (p) {
+    return '<tr><td>' + DATA.cats[p[0]] + '</td><td>' +
+      p[1] + ' &middot; ' + Math.round(100 * p[1] / n) + '%</td></tr>';
+  }).join('');
+
+  var foot = furniture + ' street furniture node' + (furniture === 1 ? '' : 's') +
+    ' excluded' + (vacant ? ', ' + vacant + ' vacant unit' + (vacant === 1 ? '' : 's') : '');
+
+  return '<div class="pop-h">' + DATA.cats[pairs[0][0]] + '-led</div>' +
+    '<div class="pop-m">' +
+      'mixedness ' + H.toFixed(2) + ' bits &middot; ' +
+      'betweenness ' + (J === null ? 'n/a' : J.toFixed(2)) +
+      (J === null ? '' : ' vs ' + nbrs + ' neighbour' + (nbrs === 1 ? '' : 's')) +
+      '<br>' + n + ' functional POIs' +
+    '</div>' +
+    '<table class="pop-t">' + rows + '</table>' +
+    '<div class="pop-f">' + foot + '</div>';
+}
+
+function addControls() {
+  var ctl = L.control({ position: 'topright' });
+  ctl.onAdd = function () {
+    var el = L.DomUtil.create('div', 'panel');
+    L.DomEvent.disableClickPropagation(el);
+
+    var btns = '<div class="modes">' +
+      Object.keys(MODES).map(function (k) {
+        return '<button data-mode="' + k + '" aria-pressed="' + (k === mode) + '">' +
+          MODES[k].label + '<small>' + MODES[k].hint + '</small></button>';
+      }).join('') + '</div>';
+
+    el.innerHTML = btns + '<div id="legend"></div>';
+    el.querySelectorAll('button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        mode = b.dataset.mode;
+        el.querySelectorAll('button').forEach(function (x) {
+          x.setAttribute('aria-pressed', String(x.dataset.mode === mode));
+        });
+        draw();
+      });
+    });
+    legendDiv = el.querySelector('#legend');
+    return el;
+  };
+  ctl.addTo(map);
+
+  var info = L.control({ position: 'bottomleft' });
+  info.onAdd = function () {
+    infoEl = L.DomUtil.create('div', 'panel');
+    return infoEl;
+  };
+  info.addTo(map);
+}
+
+/* Cell count changes with mode: betweenness needs neighbours, so it covers
+   less of the city than mixedness does. Worth showing rather than hiding. */
+function updateInfo(drawn) {
+  var t = DATA.totals;
+  infoEl.innerHTML =
+    '<strong>' + drawn.toLocaleString() + '</strong> cells shown &middot; ' +
+    '<strong>' + t.functional.toLocaleString() + '</strong> functional POIs<br>' +
+    '<span class="ends">' +
+      t.furniture.toLocaleString() + ' street furniture nodes (' +
+      Math.round(100 * t.furniture / t.rawPoints) + '% of raw OSM) excluded' +
+    '</span>';
+}
+
+function updateLegend() {
+  var m = MODES[mode];
+  var stats = mode === 'H' ? DATA.H : DATA.jsd;
+  var grad = [];
+  for (var i = 0; i <= 10; i++) grad.push(ramp(i / 10));
+
+  legendDiv.innerHTML =
+    '<h4>' + m.label + '</h4>' +
+    '<div class="ramp">' +
+      '<div class="ramp-bar" style="background:linear-gradient(to right,' + grad.join(',') + ')"></div>' +
+    '</div>' +
+    '<div class="ramp" style="justify-content:space-between;margin-top:2px;">' +
+      '<span class="ends">' + m.lo + '</span>' +
+      '<span class="ends">' + m.hi + '</span>' +
+    '</div>' +
+    '<div class="foot">' +
+      'deciles &middot; median ' + stats.breaks[4] + ', max ' + stats.max + ' ' + m.unit + '<br>' +
+      'H3 res ' + DATA.res + ' (~65 m) &middot; n &ge; ' + DATA.minN +
+      (mode === 'J' ? ' &middot; &ge;' + DATA.minNbrs + ' neighbours' : '') +
+      '<br>OSM Aug 2026' +
+    '</div>';
+}
+</script>
+</body>
+</html>
