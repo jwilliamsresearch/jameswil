@@ -127,42 +127,4 @@ const description =
     </div>
   </section>
 
-  {prepared.length > 0 && (
-    <section class="section">
-      <div class="wrap">
-        <div class="section-head">
-          <h2>Prepared, not delivered</h2>
-        </div>
-
-        <p class="note" style="margin-bottom:2rem">
-          Modules I wrote and prepared for 2025/26 but left before they ran.
-          The materials are complete and the slides are published here.
-        </p>
-
-        <ul class="rows">
-          {prepared.map(({ course, label, sessions }) => (
-            <li class="row">
-              <div class="row-inner">
-                <div class="row-num">{course.data.code}</div>
-                <h3 class="row-title">
-                  <a class="row-link" href={withBase(`/teaching/${course.id}`)}>{course.data.title}</a>
-                </h3>
-                <div class="row-body">
-                  <p class="row-desc">
-                    {[course.data.stage, course.data.institution, course.data.credits]
-                      .filter(Boolean)
-                      .join(' · ')}
-                  </p>
-                  {sessions > 0 && (
-                    <div class="tags"><span class="tag">{sessions} sessions</span></div>
-                  )}
-                </div>
-                <div class="row-end">{label}</div>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  )}
 </BaseLayout>

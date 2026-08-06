@@ -143,7 +143,7 @@ const work = defineCollection({
 
 const teaching = defineCollection({
   loader: glob({ base: './src/content/teaching', pattern: '**/*.{md,mdx}' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     summary: z.string(),
     /** Academic year, for example "2025/26". Drives the listing order. */
@@ -155,6 +155,8 @@ const teaching = defineCollection({
     credits: z.string().optional(),
     cohort: z.string().optional(),
     institution: z.string().optional(),
+    /** Institution wordmark, shown on the module page. */
+    logo: image().optional(),
     role: z.string().optional(),
     /** Institution wording, for example "Level 5" or "Level 1 undergraduate". */
     level: z.string().optional(),

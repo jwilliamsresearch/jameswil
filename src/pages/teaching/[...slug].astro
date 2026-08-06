@@ -2,6 +2,7 @@
 import { withBase } from '../../lib/paths';
 import type { GetStaticPaths } from 'astro';
 import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHead from '../../components/PageHead.astro';
 import { breadcrumbSchema, creativeWorkSchema } from '../../lib/schema';
@@ -51,9 +52,6 @@ const lectures = lecturesFor(d.code);
       <dt>When</dt>
       <dd>
         {d.year}, {d.semester}
-        {d.status === 'Upcoming' && (
-          <><br /><span class="muted">Written and prepared, not delivered</span></>
-        )}
       </dd>
       {d.institution && (<><dt>Institution</dt><dd>{d.institution}</dd></>)}
       {d.level && (<><dt>Level</dt><dd>{d.level}</dd></>)}
@@ -80,6 +78,14 @@ const lectures = lecturesFor(d.code);
       )}
     </dl>
   </PageHead>
+
+  {d.logo && (
+    <div style="border-bottom:1px solid var(--line);background:#fff;padding:1.5rem 0;">
+      <div class="wrap" style="display:flex;justify-content:center;">
+        <Image src={d.logo} alt={d.institution ?? ''} height={40} layout="none" style="height:2.5rem;width:auto;object-fit:contain;opacity:0.8;display:block;" loading="lazy" />
+      </div>
+    </div>
+  )}
 
   <section class="section">
     <div class="wrap">
