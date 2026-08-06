@@ -19,6 +19,8 @@ links:
     href: "/publications/williams2025-place-crafter"
   - label: DOI
     href: "https://doi.org/10.5281/zenodo.17677086"
+  - label: Source
+    href: "https://github.com/jwilliamsresearch/PlaceCrafter"
 
 metrics:
   - value: "18"

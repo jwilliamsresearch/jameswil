@@ -18,9 +18,9 @@ links:
   - label: Read the paper
     href: /assets/papers/Williams2026GEON.pdf
   - label: Live demo
-    href: "#"
+    href: "https://jwilliams.science/GEON/"
   - label: Code
-    href: "https://github.com/jwilliamsresearch"
+    href: "https://github.com/jwilliamsresearch/GEON"
 
 metrics:
   - value: "3"

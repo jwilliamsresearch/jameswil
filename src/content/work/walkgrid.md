@@ -15,10 +15,8 @@ coverAlt: The WalkGrid routing interface showing a generated circular walk throu
 coverCaption: The routing interface. A 3.8 km circular walk through Nottingham, generated from weighted environmental preferences rather than from shortest path.
 
 links:
-  - label: Read the paper
-    href: "#"
-  - label: Source
-    href: "#"
+  - label: Thesis
+    href: "/publications/williams2025-thesis"
 
 metrics:
   - value: "51"

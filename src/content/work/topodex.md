@@ -14,10 +14,10 @@ coverAlt: "The Topodex dashboard, showing toponym input alongside document conte
 coverCaption: "The dashboard. A toponym is never submitted alone: the document context and temporal range it came from are inputs to the resolution, not metadata attached afterwards."
 
 links:
-  - label: Live demo
-    href: "#"
+  - label: Publication
+    href: "https://www.researchgate.net/publication/410789220_On_the_Absence_of_Information_in_Slavery_and_Conflict_Corpora"
   - label: Source
-    href: "https://github.com/jwilliamsresearch"
+    href: "https://github.com/jwilliamsresearch/Topodex"
 
 metrics:
   - value: 894M+

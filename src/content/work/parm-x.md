@@ -16,6 +16,8 @@ coverCaption: "The model in the City as Lab space. The surface is bare white ter
 
 
 links:
+  - label: Live app
+    href: "https://parmx.jameswil.com"
   - label: Project page
     href: "https://www.nottingham.ac.uk/city-as-lab/digital-nottingham-assets/projection-augmented-relief-model-parm.aspx"
   - label: City as Lab

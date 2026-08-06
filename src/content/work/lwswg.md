@@ -18,7 +18,7 @@ links:
   - label: Visit the platform
     href: "https://lwswg.jwilliams.science"
   - label: Planning Checklist
-    href: "https://lwswg.jwilliams.science"
+    href: "https://lwswg.jwilliams.science/documentation/methods-and-evaluation/checklist.html"
 
 metrics:
   - value: "25+"

@@ -15,8 +15,8 @@ coverAlt: "The CDISAW landing page, showing the platform title over pale stone a
 coverCaption: "The platform reports its own scale on arrival, and takes a question in plain English. The counts below the title are live, not a claim in a README."
 
 links:
-  - label: Live demo
-    href: "#"
+  - label: Publication
+    href: "https://www.researchgate.net/publication/410789220_On_the_Absence_of_Information_in_Slavery_and_Conflict_Corpora"
 
 metrics:
   - value: 23.5M

@@ -16,9 +16,9 @@ coverCaption: "Three of the six national datasets, drawn as their own points. Se
 
 links:
   - label: Explore the map
-    href: "https://jwilliams.science/anythingpoi/index.html"
-  - label: Methodology
-    href: "https://jwilliams.science/anythingpoi/index.html"
+    href: "https://jwilliams.science/anythingpoi/"
+  - label: Code
+    href: "https://github.com/jwilliamsresearch/anythingpoi"
 
 metrics:
   - value: 22.7M
