@@ -9,7 +9,6 @@ stage: "2nd year"
 credits: "20 credits"
 institution: "Birmingham Newman University"
 logo: ../../assets/about/birminghamNewman.png
-departmentLogo: ../../assets/about/newmanCS.png
 role: "Module lead (founding)"
 tags: ["Information security", "NIST CSF", "Security governance", "Risk management", "Critical infrastructure"]
 ---

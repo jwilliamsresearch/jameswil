@@ -127,7 +127,10 @@ var PAIRS = [['brook', 'creek'], ['lac', 'lake'], ['pond', 'lake'], ['steady', '
 /* Below this many names in a cell the head-to-head reading is a coin flip. */
 var PAIR_FLOOR = 3;
 
-var map = L.map('map', { preferCanvas: true, scrollWheelZoom: false });
+/* Controls live on the left. Atlantic Canada sits in the top right of this
+   frame and owns most of the interesting words, so it has to stay uncovered. */
+var map = L.map('map', { preferCanvas: true, scrollWheelZoom: false, zoomControl: false });
+L.control.zoom({ position: 'bottomright' }).addTo(map);
 /* Named Canada, roughly. The far north is in the data but holds almost no
    names, and letting it into the frame costs half the canvas. */
 map.fitBounds([[42.5, -140], [62, -52]]);
@@ -212,6 +215,11 @@ function drawPair(a, b) {
 function render() {
   layer.clearLayers();
   if (mode.kind === 'word') drawWord(mode.word); else drawPair(mode.a, mode.b);
+  /* Follow the word. A national frame is right for brook against creek and
+     useless for the words that only happen in one bay. */
+  var b = L.latLngBounds([]);
+  layer.eachLayer(function (l) { b.extend(l.getBounds()); });
+  if (b.isValid()) map.fitBounds(b, { padding: [12, 12], maxZoom: 7 });
   document.querySelectorAll('.pairs button').forEach(function (btn) {
     btn.setAttribute('aria-pressed',
       String(mode.kind === 'pair' && btn.dataset.a === mode.a && btn.dataset.b === mode.b));
@@ -221,7 +229,7 @@ function render() {
   });
 }
 
-var pick = L.control({ position: 'topright' });
+var pick = L.control({ position: 'topleft' });
 pick.onAdd = function () {
   var d = L.DomUtil.create('div', 'panel');
   var words = Object.keys(DATA.words).sort(function (x, y) {
@@ -261,7 +269,7 @@ pick.onAdd = function () {
   return d;
 };
 
-var legend = L.control({ position: 'bottomright' });
+var legend = L.control({ position: 'bottomleft' });
 legend.onAdd = function () {
   this._d = L.DomUtil.create('div', 'panel');
   L.DomEvent.disableClickPropagation(this._d);

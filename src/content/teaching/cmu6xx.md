@@ -9,7 +9,6 @@ stage: "3rd year"
 credits: "20 credits"
 institution: "Birmingham Newman University"
 logo: ../../assets/about/birminghamNewman.png
-departmentLogo: ../../assets/about/newmanCS.png
 role: "Module lead (founding)"
 tags: ["Ethical hacking", "Penetration testing", "Offensive security", "Vulnerability assessment", "Reverse engineering"]
 ---

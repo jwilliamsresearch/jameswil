@@ -9,7 +9,6 @@ stage: "1st year"
 credits: "20 credits"
 institution: "Birmingham Newman University"
 logo: ../../assets/about/birminghamNewman.png
-departmentLogo: ../../assets/about/newmanCS.png
 role: "Module lead (founding)"
 tags: ["Computer networking", "Operating systems", "Computer architecture", "Cloud", "Network security"]
 ---
