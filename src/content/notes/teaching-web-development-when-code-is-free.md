@@ -1,6 +1,6 @@
 ---
 title: "Teaching web development when writing the code is the cheap part"
-date: 2026-07-14
+date: 2026-01-15
 tags: [Teaching, Web development, LLM]
 draft: false
 ---

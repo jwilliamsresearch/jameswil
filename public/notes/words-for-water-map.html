@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The words for water</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body, #map { width: 100%; height: 100%; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: #f5f4f0; }
+
+  .panel {
+    background: rgba(255,255,255,0.94);
+    padding: 8px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+    color: #222;
+    line-height: 1.5;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.16);
+  }
+  .panel h4 { font-size: 11px; margin-bottom: 5px; letter-spacing: 0.01em; }
+
+  .pairs { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 7px; max-width: 208px; }
+  .pairs button, .words button {
+    font: inherit; font-size: 11px; text-align: left;
+    padding: 3px 6px; border: 1px solid #d6d3cc; border-radius: 4px;
+    background: #fff; color: #444; cursor: pointer; white-space: nowrap;
+  }
+  .pairs button:hover, .words button:hover { border-color: #999; }
+  .pairs button[aria-pressed="true"], .words button[aria-pressed="true"] {
+    background: #2b2b2b; color: #fff; border-color: #2b2b2b; font-weight: 600;
+  }
+
+  #find {
+    font: inherit; font-size: 11px; width: 100%; padding: 3px 6px; margin-bottom: 5px;
+    border: 1px solid #d6d3cc; border-radius: 4px; background: #fff; color: #222;
+  }
+  .words {
+    display: flex; flex-direction: column; gap: 2px;
+    max-height: 190px; overflow-y: auto; overscroll-behavior: contain;
+  }
+  .words button { display: flex; justify-content: space-between; gap: 10px; }
+  .words button i { font-style: normal; opacity: 0.55; font-variant-numeric: tabular-nums; }
+
+  .ramp { display: flex; gap: 4px; align-items: center; }
+  .ramp-bar {
+    width: 92px; height: 9px; border-radius: 3px; flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.12);
+  }
+  .ends { font-size: 9.5px; color: #666; }
+  .foot { margin-top: 6px; font-size: 9.5px; color: #777; }
+  .def { margin-top: 6px; font-size: 10px; color: #555; max-width: 208px; }
+  .def b { font-weight: 600; }
+
+  .pop-h { font-size: 12.5px; font-weight: 600; margin-bottom: 1px; }
+  .pop-m { color: #666; font-size: 10.5px; margin-bottom: 6px; }
+  .pop-t { font-size: 11px; border-collapse: collapse; }
+  .pop-t td { padding: 1px 0; }
+  .pop-t td:first-child { padding-right: 10px; }
+  .pop-t td:last-child { text-align: right; color: #555; font-variant-numeric: tabular-nums; }
+
+  @media (prefers-color-scheme: dark) {
+    body { background: #1a1a1a; }
+    .panel { background: rgba(28,28,28,0.94); color: #e8e6e1; }
+    .pairs button, .words button, #find { background: #2a2a2a; color: #ccc; border-color: #444; }
+    .pairs button[aria-pressed="true"], .words button[aria-pressed="true"] {
+      background: #e8e6e1; color: #1a1a1a; border-color: #e8e6e1; }
+    .ends, .foot, .def, .pop-m { color: #999; }
+    .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: #262626; color: #e8e6e1; }
+    .pop-t td:last-child { color: #aaa; }
+  }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+/* Viridis-ish, for the single-word density mode: few names = yellow, many = deep purple. */
+var STOPS = [[253,231,37],[144,215,67],[53,183,121],[33,145,140],[49,104,142],[68,57,131],[68,1,84]];
+/* Diverging, for the head-to-head mode. Warm = the first word, cool = the second. */
+var DIV = [[140,66,4],[196,110,15],[240,170,90],[238,238,234],[130,186,208],[45,120,163],[14,68,110]];
+
+function interp(stops, t) {
+  t = Math.max(0, Math.min(1, t));
+  var s = t * (stops.length - 1), lo = Math.floor(s),
+      hi = Math.min(stops.length - 1, lo + 1), f = s - lo;
+  return 'rgb(' +
+    Math.round(stops[lo][0] + f * (stops[hi][0] - stops[lo][0])) + ',' +
+    Math.round(stops[lo][1] + f * (stops[hi][1] - stops[lo][1])) + ',' +
+    Math.round(stops[lo][2] + f * (stops[hi][2] - stops[lo][2])) + ')';
+}
+function rampCss(stops) {
+  var parts = [];
+  for (var i = 0; i < stops.length; i++) {
+    parts.push('rgb(' + stops[i].join(',') + ') ' + Math.round(i / (stops.length - 1) * 100) + '%');
+  }
+  return 'linear-gradient(to right,' + parts.join(',') + ')';
+}
+
+/* The keys in the data are accent-folded so the matcher stays simple. Put them back. */
+var LABEL = {
+  riviere: 'rivière', etang: 'étang', decharge: 'décharge'
+};
+
+/* Terminology Bulletin 176 wording, trimmed to the sense that applies here. */
+var DEF = {
+  tickle: 'A narrow stretch of saltwater; usually with hazardous tides, currents and rocks. Used in N.L.',
+  steady: 'Still water of a brook or river, not apparently affected by stream flow. N.L. The glossary gives its French equivalent as fosse.',
+  fosse: 'A part of a stream that is deeper and less fast-flowing than the surrounding waters. Often a rest area for salmon.',
+  pool: 'A deep or still place in a watercourse. Atlantic provinces and Ont.',
+  sunker: 'A submerged rock over which the sea breaks. N.L. and N.S.',
+  rattle: 'Rapids, or a fast-flowing stretch of a watercourse. The word describes the sound made by the water.',
+  barasway: 'Variant of barachois. N.L.',
+  barachois: 'A tidal pond partly obstructed by a bar.',
+  gut: 'A narrow channel, inlet, or cove. Atlantic provinces and Ont.',
+  bight: 'A water area in a broad indentation of the shoreline.',
+  tarn: 'A small mountain lake. N.L. and B.C.',
+  gulch: 'A deep, steeply graded, V-shaped declivity, sometimes containing a stream. Yukon use is in the gold mining areas of the late 1890s.',
+  slough: 'A backwater area, usually marshy; or a meander channel cut off from the main drainage.',
+  coulee: 'A usually steep-sided valley or ravine. Some have flat bottoms, and contain streams and lakes.',
+  drain: 'A small watercourse, usually modified by ditching through relatively flat terrain. Ont. and Man.'
+};
+
+var PAIRS = [['brook', 'creek'], ['lac', 'lake'], ['pond', 'lake'], ['steady', 'fosse']];
+
+/* Below this many names in a cell the head-to-head reading is a coin flip. */
+var PAIR_FLOOR = 3;
+
+var map = L.map('map', { preferCanvas: true, scrollWheelZoom: false });
+/* Named Canada, roughly. The far north is in the data but holds almost no
+   names, and letting it into the frame costs half the canvas. */
+map.fitBounds([[42.5, -140], [62, -52]]);
+map.on('click', function () { map.scrollWheelZoom.enable(); });
+
+/* A grey canvas, because the polygons are carrying the colour. */
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+  attribution: 'Tiles &copy; Esri. Names: Canadian Geographical Names Database, Natural Resources Canada.',
+  maxZoom: 12
+}).addTo(map);
+
+var DATA, layer = L.layerGroup().addTo(map), mode = { kind: 'pair', a: 'brook', b: 'creek' };
+
+function label(w) { return LABEL[w] || w; }
+
+function polyOf(i) {
+  var f = DATA.cells[i], ring = [];
+  for (var k = 0; k < f.length; k += 2) ring.push([f[k + 1], f[k]]);
+  return ring;
+}
+
+/* Counts are heavily right-skewed, so rank drives colour rather than magnitude.
+   A linear ramp on these leaves nine tenths of the range unused. */
+function deciles(values) {
+  var s = values.slice().sort(function (a, b) { return a - b; }), cuts = [];
+  for (var i = 1; i < 10; i++) cuts.push(s[Math.floor(i / 10 * s.length)]);
+  return cuts;
+}
+function rank(cuts, v) {
+  var i = 0;
+  while (i < cuts.length && v > cuts[i]) i++;
+  return i / cuts.length;
+}
+
+function cellsOf(word) {
+  var m = new Map(), c = DATA.words[word] ? DATA.words[word].c : [];
+  for (var i = 0; i < c.length; i++) m.set(c[i][0], c[i][1]);
+  return m;
+}
+
+function popWord(word, e) {
+  var names = e[2] || [], rows = '';
+  for (var i = 0; i < names.length; i++) rows += '<tr><td>' + names[i] + '</td></tr>';
+  return '<div class="pop-h">' + label(word) + '</div>' +
+    '<div class="pop-m">' + e[1] + (e[1] === 1 ? ' name' : ' names') + ' in this cell</div>' +
+    (rows ? '<table class="pop-t">' + rows + '</table>' : '');
+}
+
+function drawWord(word) {
+  var cells = DATA.words[word].c;
+  var cuts = deciles(cells.map(function (e) { return e[1]; }));
+  cells.forEach(function (e) {
+    var col = interp(STOPS, rank(cuts, e[1]));
+    L.polygon(polyOf(e[0]), {
+      color: col, weight: 0.4, opacity: 0.55, fillColor: col, fillOpacity: 0.72
+    }).bindPopup(popWord(word, e)).addTo(layer);
+  });
+  legendWord(word);
+}
+
+function drawPair(a, b) {
+  var ma = cellsOf(a), mb = cellsOf(b), seen = new Set();
+  ma.forEach(function (_, k) { seen.add(k); });
+  mb.forEach(function (_, k) { seen.add(k); });
+  seen.forEach(function (ci) {
+    var na = ma.get(ci) || 0, nb = mb.get(ci) || 0;
+    if (na + nb < PAIR_FLOOR) return;
+    var share = na / (na + nb);
+    var col = interp(DIV, 1 - share);
+    L.polygon(polyOf(ci), {
+      color: col, weight: 0.4, opacity: 0.6, fillColor: col, fillOpacity: 0.78
+    }).bindPopup(
+      '<div class="pop-h">' + label(a) + ' or ' + label(b) + '?</div>' +
+      '<div class="pop-m">' + Math.round(share * 100) + '% ' + label(a) + '</div>' +
+      '<table class="pop-t"><tr><td>' + label(a) + '</td><td>' + na + '</td></tr>' +
+      '<tr><td>' + label(b) + '</td><td>' + nb + '</td></tr></table>'
+    ).addTo(layer);
+  });
+  legendPair(a, b);
+}
+
+function render() {
+  layer.clearLayers();
+  if (mode.kind === 'word') drawWord(mode.word); else drawPair(mode.a, mode.b);
+  document.querySelectorAll('.pairs button').forEach(function (btn) {
+    btn.setAttribute('aria-pressed',
+      String(mode.kind === 'pair' && btn.dataset.a === mode.a && btn.dataset.b === mode.b));
+  });
+  document.querySelectorAll('.words button').forEach(function (btn) {
+    btn.setAttribute('aria-pressed', String(mode.kind === 'word' && btn.dataset.w === mode.word));
+  });
+}
+
+var pick = L.control({ position: 'topright' });
+pick.onAdd = function () {
+  var d = L.DomUtil.create('div', 'panel');
+  var words = Object.keys(DATA.words).sort(function (x, y) {
+    return DATA.words[y].n - DATA.words[x].n;
+  });
+  var pairHtml = PAIRS.map(function (p) {
+    return '<button data-a="' + p[0] + '" data-b="' + p[1] + '">' +
+      label(p[0]) + ' / ' + label(p[1]) + '</button>';
+  }).join('');
+  var wordHtml = words.map(function (w) {
+    return '<button data-w="' + w + '"><span>' + label(w) + '</span><i>' +
+      DATA.words[w].n.toLocaleString('en-CA') + '</i></button>';
+  }).join('');
+  d.innerHTML =
+    '<h4>Head to head</h4><div class="pairs">' + pairHtml + '</div>' +
+    '<h4>One word at a time</h4>' +
+    '<input id="find" type="search" placeholder="filter, e.g. tickle" autocomplete="off">' +
+    '<div class="words">' + wordHtml + '</div>';
+
+  L.DomEvent.disableClickPropagation(d);
+  L.DomEvent.disableScrollPropagation(d);
+  d.addEventListener('click', function (ev) {
+    var b = ev.target.closest('button');
+    if (!b) return;
+    mode = b.dataset.w
+      ? { kind: 'word', word: b.dataset.w }
+      : { kind: 'pair', a: b.dataset.a, b: b.dataset.b };
+    render();
+  });
+  d.querySelector('#find').addEventListener('input', function (ev) {
+    var q = ev.target.value.trim().toLowerCase();
+    d.querySelectorAll('.words button').forEach(function (btn) {
+      var hit = !q || btn.dataset.w.indexOf(q) === 0;
+      btn.style.display = hit ? '' : 'none';
+    });
+  });
+  return d;
+};
+
+var legend = L.control({ position: 'bottomright' });
+legend.onAdd = function () {
+  this._d = L.DomUtil.create('div', 'panel');
+  L.DomEvent.disableClickPropagation(this._d);
+  return this._d;
+};
+
+var SHORT = {
+  'Newfoundland and Labrador': 'N.L.', 'British Columbia': 'B.C.',
+  'Northwest Territories': 'N.W.T.', 'Prince Edward Island': 'P.E.I.',
+  'New Brunswick': 'N.B.', 'Nova Scotia': 'N.S.'
+};
+
+function legendWord(word) {
+  var w = DATA.words[word];
+  var provs = Object.keys(w.prov).slice(0, 2).map(function (p) {
+    return (SHORT[p] || p) + ' ' + Math.round(w.prov[p] / w.n * 100) + '%';
+  }).join(', ');
+  legend._d.innerHTML =
+    '<h4>' + label(word) + ' &middot; ' + w.n.toLocaleString('en-CA') + ' names</h4>' +
+    '<div class="ramp"><span class="ends">few</span>' +
+    '<span class="ramp-bar" style="background:' + rampCss(STOPS) + '"></span>' +
+    '<span class="ends">many</span></div>' +
+    '<div class="foot">' + provs + '</div>' +
+    (DEF[word] ? '<div class="def"><b>' + label(word) + '</b> ' + DEF[word] + '</div>' : '');
+}
+
+function legendPair(a, b) {
+  legend._d.innerHTML =
+    '<h4>' + label(a) + ' or ' + label(b) + '?</h4>' +
+    '<div class="ramp"><span class="ends">' + label(b) + '</span>' +
+    '<span class="ramp-bar" style="background:' + rampCss(DIV.slice().reverse()) + '"></span>' +
+    '<span class="ends">' + label(a) + '</span></div>' +
+    '<div class="foot">cells holding fewer than ' + PAIR_FLOOR + ' of the two are hidden</div>';
+}
+
+/* #tickle opens on one word, #steady/fosse on a pair, so the note can link
+   straight at whichever thing the paragraph is talking about. */
+function modeFromHash() {
+  var h = decodeURIComponent(location.hash.replace(/^#/, '')).toLowerCase();
+  if (!h) return null;
+  var parts = h.split('/');
+  if (parts.length === 2 && DATA.words[parts[0]] && DATA.words[parts[1]]) {
+    return { kind: 'pair', a: parts[0], b: parts[1] };
+  }
+  return DATA.words[h] ? { kind: 'word', word: h } : null;
+}
+
+fetch('/assets/notes/words-for-water.json')
+  .then(function (r) { return r.json(); })
+  .then(function (d) {
+    DATA = d;
+    pick.addTo(map);
+    legend.addTo(map);
+    mode = modeFromHash() || mode;
+    render();
+    window.addEventListener('hashchange', function () {
+      var m = modeFromHash();
+      if (m) { mode = m; render(); }
+    });
+  });
+</script>
+</body>
+</html>
