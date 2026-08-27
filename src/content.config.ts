@@ -157,6 +157,8 @@ const teaching = defineCollection({
     institution: z.string().optional(),
     /** Institution wordmark, shown on the module page. */
     logo: image().optional(),
+    /** Department or school mark, shown beside the institution wordmark. */
+    departmentLogo: image().optional(),
     role: z.string().optional(),
     /** Institution wording, for example "Level 5" or "Level 1 undergraduate". */
     level: z.string().optional(),

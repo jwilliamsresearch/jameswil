@@ -129,8 +129,6 @@ funding: >-
 team:
   - name: Dr Gary Priestnall
     affiliation: University of Nottingham
-  - name: Mick Dunn
-    affiliation: Nottingham City Council
 
 related:
   - label: "Projection Augmented Relief Model (PARM)"

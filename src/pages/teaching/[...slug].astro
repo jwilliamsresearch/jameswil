@@ -79,10 +79,18 @@ const lectures = lecturesFor(d.code);
     </dl>
   </PageHead>
 
-  {d.logo && (
+  {(d.logo || d.departmentLogo) && (
     <div style="border-bottom:1px solid var(--line);background:#fff;padding:1.5rem 0;">
-      <div class="wrap" style="display:flex;justify-content:center;">
-        <Image src={d.logo} alt={d.institution ?? ''} height={40} layout="none" style="height:2.5rem;width:auto;object-fit:contain;opacity:0.8;display:block;" loading="lazy" />
+      <div class="wrap" style="display:flex;justify-content:center;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+        {d.logo && (
+          <Image src={d.logo} alt={d.institution ?? ''} height={40} layout="none" style="height:2.5rem;width:auto;object-fit:contain;opacity:0.8;display:block;" loading="lazy" />
+        )}
+        {d.logo && d.departmentLogo && (
+          <span aria-hidden="true" style="width:1px;height:2rem;background:var(--line);"></span>
+        )}
+        {d.departmentLogo && (
+          <Image src={d.departmentLogo} alt="" height={40} layout="none" style="height:1.75rem;width:auto;object-fit:contain;display:block;" loading="lazy" />
+        )}
       </div>
     </div>
   )}
