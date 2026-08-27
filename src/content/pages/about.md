@@ -98,16 +98,6 @@ the paper.
 | Practice | Git, CI/CD with GitHub Actions, pytest, code review, containerized deployment, orchestration |
 | ML and GIS | Embeddings, graph neural networks, NLP geoparsing, LLM integration, QGIS, ArcGIS Pro, FME, MapLibre |
 
-## Experience
-
-| Period | Role | Organisation |
-| --- | --- | --- |
-| 2026 to present | Leverhulme Research Fellow in GeoAI and Data Science | Rights Lab and Leverhulme Centre for Research on Slavery in War, University of Nottingham |
-| 2025 to 2026 | Assistant Professor in Computer Science | Birmingham Newman University |
-| 2025 to 2026 | Geospatial Developer, Digital Twin Platform (contract) | City as Lab, University of Nottingham |
-| 2024 to 2025 | Project Lead, Leisure Walking Systems Working Group | Horizon CDT, University of Nottingham |
-| 2020 to 2024 | Doctoral Researcher, Geospatial Data Science | Nottingham Geospatial Institute, Ordnance Survey funded |
-
 ## Credentials
 
 AWS Certified Cloud Practitioner, 2025 to 2028.
