@@ -1018,26 +1018,30 @@ a.card:hover, .card:hover { background: var(--bg-sunk); }
 .footer-motif {
   position: absolute;
   right: 0; bottom: 0;
-  width: min(360px, 55%); height: 120px;
-  color: var(--grid);
+  width: min(420px, 60%); height: 170px;
+  /* --grid is tuned for a full-bleed hero wash and disappears at this size,
+     so the motif gets its own slightly firmer value. */
+  color: color-mix(in srgb, var(--fg) 9%, transparent);
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(to left, #000, transparent 85%);
-  mask-image: linear-gradient(to left, #000, transparent 85%);
+  -webkit-mask-image: linear-gradient(to left, #000 20%, transparent 95%);
+  mask-image: linear-gradient(to left, #000 20%, transparent 95%);
 }
 .footer-motif svg { width: 100%; height: 100%; }
 
 .footer-cols {
   display: grid;
-  grid-template-columns: 1.6fr 1fr 1fr;
+  grid-template-columns: 1.3fr 1fr 1fr;
   gap: 2rem clamp(1.5rem, 4vw, 4rem);
 }
 
-.footer-ident { display: grid; gap: 0.15rem; font-size: 0.8125rem; }
+/* align-content, or the four rows stretch to match the six-item nav column
+   beside them and the block falls apart. */
+.footer-ident { display: grid; align-content: start; gap: 0.15rem; font-size: 0.8125rem; }
 .footer-ident .brand-mark { margin-bottom: 0.75rem; }
 .footer-name { color: var(--fg); font-size: 0.9375rem; letter-spacing: -0.02em; }
 
 .footer-col .label { margin-bottom: 0.9rem; }
-.footer-col ul { list-style: none; padding: 0; display: grid; gap: 0.45rem; }
+.footer-col ul { list-style: none; padding: 0; display: grid; align-content: start; gap: 0.45rem; }
 .footer-col a { font-size: 0.8125rem; }
 .footer-col .ext { font-size: 0.6875rem; margin-left: 0.3em; color: var(--fg-faint); }
 
@@ -2006,6 +2010,9 @@ pre.cite-body {
   .footer-cols { grid-template-columns: 1fr 1fr; }
   .footer-ident { grid-column: 1 / -1; }
   .footer-base { flex-direction: column; gap: 0.8rem; }
+  /* flex-basis follows the main axis, so the colophon's 22rem stops being a
+     width and becomes 22rem of dead height once this stacks. */
+  .footer-colophon { flex: 0 1 auto; }
   .entry-title { font-size: 0.9375rem; }
 
   /* Stacked label and value reads better than a cramped two-column split. */
