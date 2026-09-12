@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where Toronto's e-bikes are</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #f5f4f0;
+    color: #222;
+  }
+  #stage { position: absolute; inset: 0; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  .panel {
+    position: absolute;
+    background: rgba(255,255,255,0.94);
+    padding: 8px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+    line-height: 1.5;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.16);
+  }
+  #controls { top: 10px; left: 10px; width: 178px; }
+  #readout  { top: 10px; right: 10px; width: 172px; }
+
+  .panel h4 {
+    font-size: 11px; margin-bottom: 5px; letter-spacing: 0.01em;
+  }
+  .modes { display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; }
+  .modes button {
+    font: inherit; font-size: 11px; text-align: left;
+    padding: 4px 7px; border: 1px solid #d6d3cc; border-radius: 4px;
+    background: #fff; color: #444; cursor: pointer;
+  }
+  .modes button:hover { border-color: #999; }
+  .modes button[aria-pressed="true"] {
+    background: #2b2b2b; color: #fff; border-color: #2b2b2b; font-weight: 600;
+  }
+  .modes small { display: block; font-size: 9.5px; opacity: 0.65; font-weight: 400; }
+
+  .swatches { display: flex; flex-direction: column; gap: 2px; margin-bottom: 7px; }
+  .sw { display: flex; align-items: center; gap: 6px; font-size: 10px; color: #555; }
+  .sw i {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    display: inline-block; border: 1px solid rgba(0,0,0,0.18);
+  }
+  .sw i.ring { background: none; border: 1.5px solid #c8622a; }
+
+  .foot { font-size: 9.5px; color: #777; }
+  .foot b { color: #444; }
+
+  .big { font-size: 19px; font-weight: 650; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+  .sub { font-size: 10px; color: #666; margin-bottom: 7px; }
+  .rows { font-size: 10.5px; border-collapse: collapse; width: 100%; }
+  .rows td { padding: 1px 0; }
+  .rows td:last-child { text-align: right; font-variant-numeric: tabular-nums; color: #555; }
+
+  #tip {
+    position: absolute; pointer-events: none; opacity: 0;
+    transition: opacity 90ms linear;
+    background: rgba(28,28,28,0.93); color: #fff;
+    padding: 6px 8px; border-radius: 4px; font-size: 10.5px; line-height: 1.45;
+    max-width: 200px; z-index: 5;
+  }
+  #tip b { font-size: 11px; display: block; margin-bottom: 2px; }
+  #tip span { color: #b9b5ad; }
+
+  .hint {
+    position: absolute; bottom: 10px; left: 10px;
+    font-size: 10px; color: #8a857c; max-width: 320px; line-height: 1.5;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body { background: #1a1a1a; color: #e8e6e1; }
+    .panel { background: rgba(28,28,28,0.94); color: #e8e6e1; }
+    .modes button { background: #2a2a2a; color: #ccc; border-color: #444; }
+    .modes button[aria-pressed="true"] { background: #e8e6e1; color: #1a1a1a; border-color: #e8e6e1; }
+    .sw, .rows td:last-child { color: #a8a49c; }
+    .foot, .sub, .hint { color: #8e8a82; }
+    .foot b { color: #ccc; }
+    #tip { background: rgba(240,238,233,0.95); color: #1a1a1a; }
+    #tip span { color: #5c584f; }
+  }
+
+  @media (max-width: 620px) {
+    #controls { width: 150px; }
+    #readout { display: none; }
+    .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="c"></canvas>
+
+  <div class="panel" id="controls">
+    <div class="modes" id="views"></div>
+    <h4 id="legend-title">E-bikes at this dock</h4>
+    <div class="swatches" id="swatches"></div>
+    <div class="foot" id="foot"></div>
+  </div>
+
+  <div class="panel" id="readout">
+    <div class="big" id="ro-big">&nbsp;</div>
+    <div class="sub" id="ro-sub">&nbsp;</div>
+    <table class="rows" id="ro-rows"></table>
+  </div>
+
+  <div id="tip"></div>
+  <div class="hint" id="hint"></div>
+</div>
+
+<script>
+/* ------------------------------------------------------------------ *
+ * Two layouts for the same 1,068 docks.
+ *
+ *   city    Equirectangular, longitude scaled by cos(mean latitude).
+ *           Over 25 km of Toronto this is within a few metres of a
+ *           conformal projection and needs no library.
+ *
+ *   charge  Every charging dock is moved to a single shared origin.
+ *           Each station then keeps the true bearing and the true
+ *           distance to the charging dock nearest to it. Geography is
+ *           discarded; the relationship to the charging network is all
+ *           that survives. Radius is drawn on a square-root scale so
+ *           the crowded inner ring stays readable, which means pixel
+ *           distance is not proportional to metres. Read distance off
+ *           the labelled rings, never off the spacing.
+ * ------------------------------------------------------------------ */
+
+var DATA = null, S = [], C = {};
+var view = 'city', t = 0, anim = null;     /* t: 0 = city, 1 = charge space */
+var colourBy = 'electric';
+var probe = null;                          /* click point, city view only */
+var hoverIdx = -1;
+var W = 0, H = 0, DPR = 1;
+
+var cv = document.getElementById('c');
+var ctx = cv.getContext('2d');
+var tip = document.getElementById('tip');
+
+var RINGS = [250, 500, 1000, 2000, 5000, 10000];
+
+var VIEWS = {
+  city: { label: 'The city', hint: 'docks where they are' },
+  charge: { label: 'Charge space', hint: 'docks by distance to a charger' }
+};
+
+var COLOURS = {
+  none:  '#b9b3a8',
+  low:   '#8fbf9f',
+  mid:   '#3f9e78',
+  high:  '#1f6f5c',
+  charger: '#c8622a'
+};
+
+function colourFor(s) {
+  var n = colourBy === 'electric' ? s.electric : s.classic + s.electric;
+  if (n === 0) return COLOURS.none;
+  if (n <= 2) return COLOURS.low;
+  if (n <= 8) return COLOURS.mid;
+  return COLOURS.high;
+}
+
+function radiusFor(s) {
+  var n = colourBy === 'electric' ? s.electric : s.classic + s.electric;
+  return 2.2 + Math.sqrt(n) * 1.15;
+}
+
+/* ---------- geometry ---------- */
+
+function haversine(aLat, aLon, bLat, bLon) {
+  var p = Math.PI / 180;
+  var dLat = (bLat - aLat) * p, dLon = (bLon - aLon) * p;
+  var h = Math.pow(Math.sin(dLat / 2), 2) +
+          Math.cos(aLat * p) * Math.cos(bLat * p) * Math.pow(Math.sin(dLon / 2), 2);
+  return 2 * 6371008.8 * Math.asin(Math.sqrt(h));
+}
+
+function layout() {
+  if (!S.length) return;
+
+  var lats = S.map(function (s) { return s.lat; });
+  var lons = S.map(function (s) { return s.lon; });
+  var latMid = (Math.min.apply(null, lats) + Math.max.apply(null, lats)) / 2;
+  var k = Math.cos(latMid * Math.PI / 180);
+
+  var xs = lons.map(function (v) { return v * k; });
+  var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs);
+  var y0 = Math.min.apply(null, lats), y1 = Math.max.apply(null, lats);
+
+  var pad = 46;
+  var sc = Math.min((W - pad * 2) / (x1 - x0), (H - pad * 2) / (y1 - y0));
+  var cx = (W - (x1 - x0) * sc) / 2, cy = (H - (y1 - y0) * sc) / 2;
+
+  S.forEach(function (s) {
+    s.cityX = cx + (s.lon * k - x0) * sc;
+    s.cityY = cy + (y1 - s.lat) * sc;
+  });
+
+  /* Kept so a click can be turned back into a real coordinate, and the
+     distances quoted for it are metres on the ground rather than pixels. */
+  C.inv = function (x, y) {
+    return { lon: ((x - cx) / sc + x0) / k, lat: y1 - (y - cy) / sc };
+  };
+
+  /* Charge space. sqrt radius, so the ring labels carry the distances. */
+  var maxR = Math.max.apply(null, S.map(function (s) { return s.chargerM || 0; }));
+  var rPix = Math.min(W, H) / 2 - 34;
+  C.cx = W / 2; C.cy = H / 2; C.rPix = rPix; C.maxR = maxR;
+  C.scale = function (m) { return Math.sqrt(Math.max(0, m) / maxR) * rPix; };
+
+  S.forEach(function (s) {
+    if (s.chargerM === null || s.chargerBrg === null) {
+      s.chX = C.cx; s.chY = C.cy;
+      return;
+    }
+    var a = (s.chargerBrg - 90) * Math.PI / 180;  /* 0 deg = north = up */
+    var r = C.scale(s.chargerM);
+    s.chX = C.cx + r * Math.cos(a);
+    s.chY = C.cy + r * Math.sin(a);
+  });
+}
+
+function posOf(s) {
+  if (t <= 0) return [s.cityX, s.cityY];
+  if (t >= 1) return [s.chX, s.chY];
+  var e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;   /* easeInOutCubic */
+  return [s.cityX + (s.chX - s.cityX) * e, s.cityY + (s.chY - s.cityY) * e];
+}
+
+/* ---------- drawing ---------- */
+
+function draw() {
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+
+  var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  if (t > 0.02) drawRings(t, dark);
+  if (probe && t < 0.5) drawProbe(1 - t * 2, dark);
+
+  /* Zero-e-bike docks first, so the stocked ones are never buried. */
+  var order = S.slice().sort(function (a, b) {
+    var av = colourBy === 'electric' ? a.electric : a.classic + a.electric;
+    var bv = colourBy === 'electric' ? b.electric : b.classic + b.electric;
+    return av - bv;
+  });
+
+  order.forEach(function (s) {
+    var p = posOf(s);
+    ctx.beginPath();
+    ctx.arc(p[0], p[1], radiusFor(s), 0, Math.PI * 2);
+    ctx.fillStyle = colourFor(s);
+    ctx.globalAlpha = 0.86;
+    ctx.fill();
+    if (s.charging) {
+      ctx.globalAlpha = 1;
+      ctx.lineWidth = 1.4;
+      ctx.strokeStyle = COLOURS.charger;
+      ctx.stroke();
+    }
+  });
+  ctx.globalAlpha = 1;
+
+  if (hoverIdx >= 0) {
+    var hs = S[hoverIdx], hp = posOf(hs);
+    ctx.beginPath();
+    ctx.arc(hp[0], hp[1], radiusFor(hs) + 3.5, 0, Math.PI * 2);
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = dark ? '#f0eee9' : '#1a1a1a';
+    ctx.stroke();
+  }
+}
+
+function drawRings(alpha, dark) {
+  ctx.save();
+  ctx.globalAlpha = Math.min(1, alpha) * 0.85;
+  ctx.strokeStyle = dark ? 'rgba(232,230,225,0.18)' : 'rgba(0,0,0,0.14)';
+  ctx.fillStyle = dark ? 'rgba(232,230,225,0.55)' : 'rgba(0,0,0,0.42)';
+  ctx.font = '9.5px system-ui, sans-serif';
+  ctx.lineWidth = 1;
+
+  RINGS.forEach(function (m) {
+    if (m > C.maxR) return;
+    var r = C.scale(m);
+    ctx.beginPath();
+    ctx.arc(C.cx, C.cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+    var lab = m >= 1000 ? (m / 1000) + ' km' : m + ' m';
+    ctx.fillText(lab, C.cx + 3, C.cy - r - 3);
+  });
+
+  /* The origin is 52 charging docks stacked on one another. */
+  ctx.globalAlpha = Math.min(1, alpha);
+  ctx.beginPath();
+  ctx.arc(C.cx, C.cy, 5, 0, Math.PI * 2);
+  ctx.fillStyle = COLOURS.charger;
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawProbe(alpha, dark) {
+  var near = probe.nearestAny, nearE = probe.nearestE;
+  ctx.save();
+  ctx.globalAlpha = Math.max(0, alpha);
+  ctx.lineWidth = 1.4;
+
+  if (near) {
+    ctx.beginPath();
+    ctx.moveTo(probe.x, probe.y);
+    ctx.lineTo(near.cityX, near.cityY);
+    ctx.strokeStyle = dark ? 'rgba(232,230,225,0.5)' : 'rgba(0,0,0,0.35)';
+    ctx.setLineDash([3, 3]);
+    ctx.stroke();
+  }
+  if (nearE) {
+    ctx.beginPath();
+    ctx.moveTo(probe.x, probe.y);
+    ctx.lineTo(nearE.cityX, nearE.cityY);
+    ctx.strokeStyle = COLOURS.high;
+    ctx.setLineDash([]);
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  ctx.arc(probe.x, probe.y, 3.5, 0, Math.PI * 2);
+  ctx.fillStyle = dark ? '#f0eee9' : '#1a1a1a';
+  ctx.fill();
+  ctx.restore();
+}
+
+/* ---------- interaction ---------- */
+
+function hit(mx, my) {
+  var best = -1, bestD = 13 * 13;
+  for (var i = 0; i < S.length; i++) {
+    var p = posOf(S[i]);
+    var dx = p[0] - mx, dy = p[1] - my, d = dx * dx + dy * dy;
+    if (d < bestD) { bestD = d; best = i; }
+  }
+  return best;
+}
+
+function setProbe(x, y) {
+  var ll = C.inv ? C.inv(x, y) : null;
+  if (!ll) return;
+  var bestA = null, dA = Infinity, bestE = null, dE = Infinity;
+  S.forEach(function (s) {
+    var d = haversine(ll.lat, ll.lon, s.lat, s.lon);
+    if (s.classic + s.electric > 0 && d < dA) { dA = d; bestA = s; }
+    if (s.electric > 0 && d < dE) { dE = d; bestE = s; }
+  });
+  probe = { x: x, y: y, nearestAny: bestA, nearestE: bestE, dA: dA, dE: dE };
+  readoutProbe();
+  draw();
+}
+
+function tween(to) {
+  if (anim) cancelAnimationFrame(anim);
+  var from = t, start = performance.now(), dur = 950;
+  (function step(now) {
+    var k = Math.min(1, (now - start) / dur);
+    t = from + (to - from) * k;
+    draw();
+    if (k < 1) anim = requestAnimationFrame(step);
+    else { anim = null; t = to; draw(); }
+  })(start);
+}
+
+/* ---------- panels ---------- */
+
+function readoutTotals() {
+  var T = DATA.totals;
+  document.getElementById('ro-big').textContent =
+    (100 * T.noElectric / T.stations).toFixed(1) + '%';
+  document.getElementById('ro-sub').innerHTML =
+    'of docks hold no e-bike<br>' + T.noElectric + ' of ' + T.stations;
+  document.getElementById('ro-rows').innerHTML =
+    row('Classic bikes out', T.classic.toLocaleString()) +
+    row('E-bikes out', T.electric.toLocaleString()) +
+    row('Charging docks', T.chargers) +
+    row('E-bikes on charge', T.electricAtChargers + ' (' +
+        Math.round(100 * T.electricAtChargers / T.electric) + '%)') +
+    row('Nearest e-bike, median', DATA.reach.median + ' m');
+}
+
+function readoutProbe() {
+  document.getElementById('ro-big').textContent = fmtM(probe.dE);
+  document.getElementById('ro-sub').innerHTML = 'to the nearest e-bike<br>from where you clicked';
+  document.getElementById('ro-rows').innerHTML =
+    row('Nearest bike of any kind', fmtM(probe.dA)) +
+    row('That dock', probe.nearestAny ? probe.nearestAny.name : 'n/a') +
+    row('Nearest e-bike dock', probe.nearestE ? probe.nearestE.name : 'none') +
+    row('Ratio', probe.dA > 0 ? (probe.dE / probe.dA).toFixed(1) + '&times; further' : 'n/a');
+}
+
+function row(a, b) { return '<tr><td>' + a + '</td><td>' + b + '</td></tr>'; }
+
+function fmtM(m) {
+  if (m === null || m === undefined || !isFinite(m)) return 'n/a';
+  return m >= 1000 ? (m / 1000).toFixed(2) + ' km' : Math.round(m) + ' m';
+}
+
+function buildControls() {
+  var v = document.getElementById('views');
+  v.innerHTML = Object.keys(VIEWS).map(function (k) {
+    return '<button data-v="' + k + '" aria-pressed="' + (k === view) + '">' +
+      VIEWS[k].label + '<small>' + VIEWS[k].hint + '</small></button>';
+  }).join('') +
+  '<button data-c="toggle" style="margin-top:5px">Colour: <span id="cby">e-bikes</span>' +
+  '<small>switch to every bike</small></button>';
+
+  v.querySelectorAll('button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (b.dataset.c === 'toggle') {
+        colourBy = colourBy === 'electric' ? 'all' : 'electric';
+        document.getElementById('cby').textContent = colourBy === 'electric' ? 'e-bikes' : 'every bike';
+        b.querySelector('small').textContent = colourBy === 'electric'
+          ? 'switch to every bike' : 'switch back to e-bikes';
+        document.getElementById('legend-title').textContent =
+          colourBy === 'electric' ? 'E-bikes at this dock' : 'Bikes at this dock';
+        draw();
+        return;
+      }
+      view = b.dataset.v;
+      v.querySelectorAll('[data-v]').forEach(function (o) {
+        o.setAttribute('aria-pressed', o.dataset.v === view);
+      });
+      document.getElementById('hint').textContent = hintFor();
+      if (view === 'charge' && probe) { probe = null; readoutTotals(); }
+      tween(view === 'charge' ? 1 : 0);
+    });
+  });
+
+  document.getElementById('swatches').innerHTML =
+    sw(COLOURS.none, 'none') + sw(COLOURS.low, '1 to 2') +
+    sw(COLOURS.mid, '3 to 8') + sw(COLOURS.high, '9 or more') +
+    '<div class="sw"><i class="ring"></i>charging dock</div>';
+
+  document.getElementById('foot').innerHTML =
+    '<b>' + DATA.totals.stations + '</b> docks, captured<br>' + stamp();
+
+  document.getElementById('hint').textContent = hintFor();
+}
+
+function hintFor() {
+  return view === 'city'
+    ? 'Click anywhere to find the nearest e-bike from that spot.'
+    : 'Every charging dock sits at the centre. Each station keeps its true bearing and distance to the charger nearest it. Rings are labelled; the radius is a square-root scale, so read distance off the rings.';
+}
+
+function sw(c, label) {
+  return '<div class="sw"><i style="background:' + c + '"></i>' + label + '</div>';
+}
+
+function stamp() {
+  var d = new Date(DATA.captured);
+  if (isNaN(d)) return DATA.captured;
+  return d.toLocaleString('en-CA', {
+    timeZone: 'America/Toronto', day: 'numeric', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', hour12: false
+  }) + ' Toronto time';
+}
+
+/* ---------- boot ---------- */
+
+function resize() {
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  W = cv.clientWidth; H = cv.clientHeight;
+  cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+  layout();
+  if (probe) probe = null;
+  draw();
+}
+
+fetch('/assets/notes/toronto-ebikes.json')
+  .then(function (r) { return r.json(); })
+  .then(function (d) {
+    DATA = d;
+    var ix = {};
+    d.cols.forEach(function (c, i) { ix[c] = i; });
+    S = d.stations.map(function (r) {
+      return {
+        id: r[ix.id], name: r[ix.name], lat: r[ix.lat], lon: r[ix.lon],
+        cap: r[ix.cap], classic: r[ix.classic], electric: r[ix.electric],
+        docksFree: r[ix.docksFree], charging: !!r[ix.charging],
+        chargerM: r[ix.chargerM], chargerBrg: r[ix.chargerBrg], reachM: r[ix.reachM]
+      };
+    });
+    buildControls();
+    readoutTotals();
+    resize();
+  })
+  .catch(function (e) {
+    console.error(e);
+    document.getElementById('controls').innerHTML = 'Could not load the snapshot.';
+  });
+
+window.addEventListener('resize', resize);
+
+cv.addEventListener('mousemove', function (ev) {
+  var r = cv.getBoundingClientRect();
+  var mx = ev.clientX - r.left, my = ev.clientY - r.top;
+  var i = hit(mx, my);
+  if (i !== hoverIdx) { hoverIdx = i; draw(); }
+
+  if (i < 0) { tip.style.opacity = 0; return; }
+  var s = S[i];
+  tip.innerHTML = '<b>' + s.name + '</b>' +
+    s.electric + ' e-bike' + (s.electric === 1 ? '' : 's') + ', ' +
+    s.classic + ' classic <span>of ' + s.cap + ' docks</span><br>' +
+    '<span>nearest e-bike ' + fmtM(s.reachM) + ' &middot; ' +
+    (s.charging ? 'is a charging dock' : 'charger ' + fmtM(s.chargerM) + ' away') + '</span>';
+  tip.style.opacity = 1;
+  var tw = tip.offsetWidth, th = tip.offsetHeight;
+  tip.style.left = Math.min(W - tw - 8, Math.max(8, mx + 14)) + 'px';
+  tip.style.top = Math.min(H - th - 8, Math.max(8, my + 14)) + 'px';
+});
+
+cv.addEventListener('mouseleave', function () {
+  tip.style.opacity = 0;
+  if (hoverIdx !== -1) { hoverIdx = -1; draw(); }
+});
+
+cv.addEventListener('click', function (ev) {
+  if (view !== 'city') return;
+  var r = cv.getBoundingClientRect();
+  setProbe(ev.clientX - r.left, ev.clientY - r.top);
+});
+</script>
+</body>
+</html>
