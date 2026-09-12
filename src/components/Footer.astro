@@ -1,21 +1,87 @@
 ---
 import { withBase } from '../lib/paths';
-import { SITE } from '../consts';
+import { SITE, NAV } from '../consts';
 
 const year = new Date().getFullYear();
-const links = SITE.profiles.filter((p) => p.label !== 'CV');
+
+/* The hero graticule is a square grid; the footer answers it with hexagons,
+   which is the indexing scheme half this site's work runs on. Faint enough to
+   read as texture, not decoration. */
+
+// Everything in profiles belongs here, CV included: the bottom of a Work page
+// is exactly where someone goes looking for it.
+const elsewhere = [...SITE.profiles, { label: 'RSS', href: '/rss.xml', sameAs: false }];
+
+const isExternal = (href: string) => /^https?:/.test(href);
+
+const colophon = [
+  { label: 'llms.txt', href: '/llms.txt' },
+  { label: 'Sitemap', href: '/sitemap-index.xml' },
+];
 ---
 
 <footer class="site-footer">
+  <div class="footer-motif" aria-hidden="true">
+    <svg viewBox="0 0 360 120" preserveAspectRatio="xMaxYMax slice" focusable="false">
+      <defs>
+        <pattern id="footer-hex" width="42" height="24.25" patternUnits="userSpaceOnUse">
+          <path
+            d="M7 0 L21 0 L28 12.125 L21 24.25 L7 24.25 L0 12.125 Z M28 12.125 L42 12.125"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+          />
+        </pattern>
+      </defs>
+      <rect width="360" height="120" fill="url(#footer-hex)" />
+    </svg>
+  </div>
+
   <div class="wrap">
-    <p>© {year} {SITE.displayName}, {SITE.location.country}</p>
-    <div class="footer-links">
-      {links.map((link) => (
-        <a href={withBase(link.href)} rel={link.sameAs ? 'me noopener' : undefined}>
-          {link.label}
-        </a>
-      ))}
-      <a href={withBase('/rss.xml')}>RSS</a>
+    <div class="footer-cols">
+      <div class="footer-ident">
+        <span class="brand-mark" aria-hidden="true">{SITE.initials}</span>
+        <p class="footer-name">{SITE.name}</p>
+        <p>{SITE.roles[0]}</p>
+        <p>{SITE.location.region}, {SITE.location.country}</p>
+      </div>
+
+      <nav class="footer-col" aria-label="Site">
+        <p class="label">Site</p>
+        <ul>
+          {NAV.map((item) => (
+            <li><a href={withBase(item.href)}>{item.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <nav class="footer-col" aria-label="Elsewhere">
+        <p class="label">Elsewhere</p>
+        <ul>
+          {elsewhere.map((link) => (
+            <li>
+              <a
+                href={isExternal(link.href) ? link.href : withBase(link.href)}
+                rel={link.sameAs ? 'me noopener' : undefined}
+              >
+                {link.label}
+                {isExternal(link.href) && <span class="ext" aria-hidden="true">↗</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+
+    <div class="footer-base">
+      <p>© {year} {SITE.displayName}</p>
+      <p class="footer-colophon">
+        Built with Astro. No webfonts, no trackers.
+        {colophon.map((item) => (
+          <> · <a href={withBase(item.href)}>{item.label}</a></>
+        ))}
+      </p>
+      <a class="footer-top" href="#top">Top <span aria-hidden="true">↑</span></a>
     </div>
   </div>
 </footer>

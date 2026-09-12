@@ -997,21 +997,66 @@ a.card:hover, .card:hover { background: var(--bg-sunk); }
 /* ---- 14. Footer --------------------------------------------------------- */
 
 .site-footer {
-  border-top: 1px solid var(--fg);
-  padding-block: 2rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+  /* --line-firm, not --fg: every other divider on the site is a seam, and a
+     pure black rule across the bottom reads as a wall. */
+  border-top: 1px solid var(--line-firm);
+  padding-block: 3rem 2rem;
+  /* --fg-muted clears 4.5:1 in both themes. --fg-faint does not, and some of
+     this is 11px text. */
+  color: var(--fg-muted);
+}
+.site-footer a { color: var(--fg-muted); transition: color var(--dur) var(--ease); }
+.site-footer a:hover { color: var(--fg); }
+.site-footer .label { color: var(--fg-muted); }
+.site-footer .wrap { position: relative; }
+
+/* The hero wears a square graticule. Down here it becomes a hex tessellation,
+   masked so it dissolves before it reaches any text. Decoration that says
+   something about the work rather than just filling the space. */
+.footer-motif {
+  position: absolute;
+  right: 0; bottom: 0;
+  width: min(360px, 55%); height: 120px;
+  color: var(--grid);
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to left, #000, transparent 85%);
+  mask-image: linear-gradient(to left, #000, transparent 85%);
+}
+.footer-motif svg { width: 100%; height: 100%; }
+
+.footer-cols {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr;
+  gap: 2rem clamp(1.5rem, 4vw, 4rem);
+}
+
+.footer-ident { display: grid; gap: 0.15rem; font-size: 0.8125rem; }
+.footer-ident .brand-mark { margin-bottom: 0.75rem; }
+.footer-name { color: var(--fg); font-size: 0.9375rem; letter-spacing: -0.02em; }
+
+.footer-col .label { margin-bottom: 0.9rem; }
+.footer-col ul { list-style: none; padding: 0; display: grid; gap: 0.45rem; }
+.footer-col a { font-size: 0.8125rem; }
+.footer-col .ext { font-size: 0.6875rem; margin-left: 0.3em; color: var(--fg-faint); }
+
+.footer-base {
+  display: flex; flex-wrap: wrap;
+  gap: 0.6rem 2rem;
+  align-items: baseline; justify-content: space-between;
+  margin-top: 2.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--fg-faint);
 }
-.site-footer .wrap {
-  display: flex; flex-wrap: wrap; gap: 0.75rem 2rem;
-  align-items: baseline; justify-content: space-between;
-}
-.footer-links { display: flex; gap: 1.25rem; flex-wrap: wrap; }
-.site-footer a { color: var(--fg-muted); transition: color var(--dur) var(--ease); }
-.site-footer a:hover { color: var(--fg); }
+.footer-colophon { flex: 1 1 22rem; }
+.footer-colophon a { border-bottom: 1px solid var(--line-firm); }
+.footer-top span { display: inline-block; transition: transform var(--dur) var(--ease); }
+.footer-top:hover span { transform: translateY(-3px); }
 
 /* ---- 15. Reveal --------------------------------------------------------- */
 
@@ -1958,8 +2003,9 @@ pre.cite-body {
   .btn { width: 100%; text-align: center; }
 
   .cta { padding-block: 3rem; }
-  .site-footer .wrap { flex-direction: column; gap: 1rem; }
-  .footer-links { gap: 1rem; }
+  .footer-cols { grid-template-columns: 1fr 1fr; }
+  .footer-ident { grid-column: 1 / -1; }
+  .footer-base { flex-direction: column; gap: 0.8rem; }
   .entry-title { font-size: 0.9375rem; }
 
   /* Stacked label and value reads better than a cramped two-column split. */
