@@ -10,7 +10,8 @@
     "build": "astro build",
     "build:toronto": "node scripts/build-toronto-entropy.cjs",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "build:toronto-ebikes": "node scripts/build-toronto-ebikes.cjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.2.2",

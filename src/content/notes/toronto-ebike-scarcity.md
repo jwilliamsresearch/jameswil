@@ -11,7 +11,7 @@ countable, 1,068 times over, every minute. That is enough to ask a question the
 operator's own headline numbers never answer: not how many e-bikes exist, but
 how far you are from one.
 
-I took a snapshot at 12:23 on Friday 12 September 2026, Toronto time. Across the
+I took a snapshot at 12:23 on Saturday 12 September 2026, Toronto time. Across the
 whole network:
 
 | | |
@@ -57,7 +57,7 @@ capacity 26.0 docks against 19.0 elsewhere, does not soften it:
 | at a charging station | **0.334** |
 | everywhere else | **0.026** |
 
-A dock that can charge is **thirteen times** more likely to have an e-bike in
+A dock that can charge is almost **thirteen times** more likely to have an e-bike in
 it. Concentration follows: 34 stations hold half the electric fleet, and the
 top decile of stations holds 71.9% of it.
 
@@ -103,7 +103,7 @@ Union Station:
 The downtown core has 19% of the stations and 7.6% of the e-bikes. Three
 quarters of its docks are empty of electric.
 
-Read that as demand rather than as neglect. At midday on a Friday the core's
+Read that as demand rather than as neglect. At midday on a Saturday the core's
 e-bikes are not in the core, they are out being ridden, and the docks that
 should catch them on return are the 1,016 that cannot charge them. The
 suburban rings look better stocked because their bikes are sitting still.

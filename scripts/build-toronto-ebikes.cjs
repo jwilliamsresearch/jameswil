@@ -30,11 +30,12 @@ const BASE = 'https://toronto.publicbikesystem.net/customer/gbfs/v3.0/';
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, 'public', 'assets', 'notes', 'toronto-ebikes.json');
 
-/* ICONIC is the classic pedal bike. Everything else in the availability feed
-   is battery assisted: EFIT and EFIT G5 are the e-fit models, BOOST and ASTRO
-   are the older electric stock. Treating the split as "ICONIC vs rest" would
-   silently reclassify any model added later, so the electric set is named. */
-const CLASSIC = new Set(['ICONIC', 'FIT', 'METRO', 'CHLOE', 'COSMO']);
+/* The pedal models, named rather than inferred. EFIT, EFIT G5, BOOST and
+   ASTRO are the battery assisted stock, and anything the feed adds later
+   falls to electric by default. That default is the safe direction: a new
+   classic model counted as electric shows up immediately as a jump in the
+   headline number, where the reverse would quietly inflate availability. */
+const CLASSIC = new Set(['ICONIC', 'FIT', 'METRO', 'METRO_CONNECTED', 'CHLOE', 'COSMO']);
 
 const R = 6371008.8; // IUGG mean Earth radius, metres
 
