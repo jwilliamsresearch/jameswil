@@ -16,7 +16,6 @@ export function personSchema() {
     name: SITE.name,
     url: SITE.url,
     email: SITE.email,
-    telephone: SITE.phone,
     description: SITE.description,
     jobTitle: [...SITE.roles],
     address: {

@@ -18,7 +18,6 @@ export const SITE = {
   shortName: 'jameswil.com',
   initials: 'JW',
   email: 'james@jameswil.com',
-  phone: '+1 (647) 687-9224',
   /** Used verbatim as the hero line. Kept to one sentence: the numbers do
       their work on the About and Work pages, not here. */
   tagline:
